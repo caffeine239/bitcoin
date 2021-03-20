@@ -1,26 +1,20 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2020 The Bitcoin Core developers
+// Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <chain.h>
-#include <chainparams.h>
-#include <core_io.h>
-#include <httpserver.h>
-#include <index/txindex.h>
-#include <node/context.h>
-#include <primitives/block.h>
-#include <primitives/transaction.h>
-#include <rpc/blockchain.h>
-#include <rpc/protocol.h>
-#include <rpc/server.h>
-#include <streams.h>
-#include <sync.h>
-#include <txmempool.h>
-#include <util/check.h>
-#include <util/ref.h>
-#include <validation.h>
-#include <version.h>
+#include "chain.h"
+#include "chainparams.h"
+#include "primitives/block.h"
+#include "primitives/transaction.h"
+#include "validation.h"
+#include "httpserver.h"
+#include "rpc/server.h"
+#include "streams.h"
+#include "sync.h"
+#include "txmempool.h"
+#include "utilstrencodings.h"
+#include "version.h"
 
 #include <boost/algorithm/string.hpp>
 
@@ -28,36 +22,45 @@
 
 static const size_t MAX_GETUTXOS_OUTPOINTS = 15; //allow a max of 15 outpoints to be queried at once
 
-enum class RetFormat {
-    UNDEF,
-    BINARY,
-    HEX,
-    JSON,
+enum RetFormat {
+    RF_UNDEF,
+    RF_BINARY,
+    RF_HEX,
+    RF_JSON,
 };
 
 static const struct {
-    RetFormat rf;
+    enum RetFormat rf;
     const char* name;
 } rf_names[] = {
-      {RetFormat::UNDEF, ""},
-      {RetFormat::BINARY, "bin"},
-      {RetFormat::HEX, "hex"},
-      {RetFormat::JSON, "json"},
+      {RF_UNDEF, ""},
+      {RF_BINARY, "bin"},
+      {RF_HEX, "hex"},
+      {RF_JSON, "json"},
 };
 
 struct CCoin {
+    uint32_t nTxVer; // Don't call this nVersion, that name has a special meaning inside IMPLEMENT_SERIALIZE
     uint32_t nHeight;
     CTxOut out;
 
-    CCoin() : nHeight(0) {}
-    explicit CCoin(Coin&& in) : nHeight(in.nHeight), out(std::move(in.out)) {}
+    ADD_SERIALIZE_METHODS;
 
-    SERIALIZE_METHODS(CCoin, obj)
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action)
     {
-        uint32_t nTxVerDummy = 0;
-        READWRITE(nTxVerDummy, obj.nHeight, obj.out);
+        READWRITE(nTxVer);
+        READWRITE(nHeight);
+        READWRITE(out);
     }
 };
+
+extern void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry);
+extern UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool txDetails = false);
+extern UniValue mempoolInfoToJSON();
+extern UniValue mempoolToJSON(bool fVerbose = false);
+extern void ScriptPubKeyToJSON(const CScript& scriptPubKey, UniValue& out, bool fIncludeHex);
+extern UniValue blockheaderToJSON(const CBlockIndex* blockindex);
 
 static bool RESTERR(HTTPRequest* req, enum HTTPStatusCode status, std::string message)
 {
@@ -66,45 +69,7 @@ static bool RESTERR(HTTPRequest* req, enum HTTPStatusCode status, std::string me
     return false;
 }
 
-/**
- * Get the node context.
- *
- * @param[in]  req  The HTTP request, whose status code will be set if node
- *                  context is not found.
- * @returns         Pointer to the node context or nullptr if not found.
- */
-static NodeContext* GetNodeContext(const util::Ref& context, HTTPRequest* req)
-{
-    NodeContext* node = context.Has<NodeContext>() ? &context.Get<NodeContext>() : nullptr;
-    if (!node) {
-        RESTERR(req, HTTP_INTERNAL_SERVER_ERROR,
-                strprintf("%s:%d (%s)\n"
-                          "Internal bug detected: Node context not found!\n"
-                          "You may report this issue here: %s\n",
-                          __FILE__, __LINE__, __func__, PACKAGE_BUGREPORT));
-        return nullptr;
-    }
-    return node;
-}
-
-/**
- * Get the node context mempool.
- *
- * @param[in]  req The HTTP request, whose status code will be set if node
- *                 context mempool is not found.
- * @returns        Pointer to the mempool or nullptr if no mempool found.
- */
-static CTxMemPool* GetMemPool(const util::Ref& context, HTTPRequest* req)
-{
-    NodeContext* node = context.Has<NodeContext>() ? &context.Get<NodeContext>() : nullptr;
-    if (!node || !node->mempool) {
-        RESTERR(req, HTTP_NOT_FOUND, "Mempool disabled or instance not found");
-        return nullptr;
-    }
-    return node->mempool.get();
-}
-
-static RetFormat ParseDataFormat(std::string& param, const std::string& strReq)
+static enum RetFormat ParseDataFormat(std::string& param, const std::string& strReq)
 {
     const std::string::size_type pos = strReq.rfind('.');
     if (pos == std::string::npos)
@@ -116,10 +81,9 @@ static RetFormat ParseDataFormat(std::string& param, const std::string& strReq)
     param = strReq.substr(0, pos);
     const std::string suff(strReq, pos + 1);
 
-    for (const auto& rf_name : rf_names) {
-        if (suff == rf_name.name)
-            return rf_name.rf;
-    }
+    for (unsigned int i = 0; i < ARRAYLEN(rf_names); i++)
+        if (suff == rf_names[i].name)
+            return rf_names[i].rf;
 
     /* If no suffix is found, return original string.  */
     param = strReq;
@@ -128,19 +92,27 @@ static RetFormat ParseDataFormat(std::string& param, const std::string& strReq)
 
 static std::string AvailableDataFormatsString()
 {
-    std::string formats;
-    for (const auto& rf_name : rf_names) {
-        if (strlen(rf_name.name) > 0) {
+    std::string formats = "";
+    for (unsigned int i = 0; i < ARRAYLEN(rf_names); i++)
+        if (strlen(rf_names[i].name) > 0) {
             formats.append(".");
-            formats.append(rf_name.name);
+            formats.append(rf_names[i].name);
             formats.append(", ");
         }
-    }
 
     if (formats.length() > 0)
         return formats.substr(0, formats.length() - 2);
 
     return formats;
+}
+
+static bool ParseHashStr(const std::string& strReq, uint256& v)
+{
+    if (!IsHex(strReq) || (strReq.size() != 64))
+        return false;
+
+    v.SetHex(strReq);
+    return true;
 }
 
 static bool CheckWarmup(HTTPRequest* req)
@@ -151,8 +123,7 @@ static bool CheckWarmup(HTTPRequest* req)
     return true;
 }
 
-static bool rest_headers(const util::Ref& context,
-                         HTTPRequest* req,
+static bool rest_headers(HTTPRequest* req,
                          const std::string& strURIPart)
 {
     if (!CheckWarmup(req))
@@ -165,7 +136,7 @@ static bool rest_headers(const util::Ref& context,
     if (path.size() != 2)
         return RESTERR(req, HTTP_BAD_REQUEST, "No header count specified. Use /rest/headers/<count>/<hash>.<ext>.");
 
-    long count = strtol(path[0].c_str(), nullptr, 10);
+    long count = strtol(path[0].c_str(), NULL, 10);
     if (count < 1 || count > 2000)
         return RESTERR(req, HTTP_BAD_REQUEST, "Header count out of range: " + path[0]);
 
@@ -174,49 +145,43 @@ static bool rest_headers(const util::Ref& context,
     if (!ParseHashStr(hashStr, hash))
         return RESTERR(req, HTTP_BAD_REQUEST, "Invalid hash: " + hashStr);
 
-    const CBlockIndex* tip = nullptr;
     std::vector<const CBlockIndex *> headers;
     headers.reserve(count);
     {
         LOCK(cs_main);
-        tip = ::ChainActive().Tip();
-        const CBlockIndex* pindex = g_chainman.m_blockman.LookupBlockIndex(hash);
-        while (pindex != nullptr && ::ChainActive().Contains(pindex)) {
+        BlockMap::const_iterator it = mapBlockIndex.find(hash);
+        const CBlockIndex *pindex = (it != mapBlockIndex.end()) ? it->second : NULL;
+        while (pindex != NULL && chainActive.Contains(pindex)) {
             headers.push_back(pindex);
             if (headers.size() == (unsigned long)count)
                 break;
-            pindex = ::ChainActive().Next(pindex);
+            pindex = chainActive.Next(pindex);
         }
     }
 
-    switch (rf) {
-    case RetFormat::BINARY: {
-        CDataStream ssHeader(SER_NETWORK, PROTOCOL_VERSION);
-        for (const CBlockIndex *pindex : headers) {
-            ssHeader << pindex->GetBlockHeader();
-        }
+    CDataStream ssHeader(SER_NETWORK, PROTOCOL_VERSION);
+    BOOST_FOREACH(const CBlockIndex *pindex, headers) {
+        ssHeader << pindex->GetBlockHeader();
+    }
 
+    switch (rf) {
+    case RF_BINARY: {
         std::string binaryHeader = ssHeader.str();
         req->WriteHeader("Content-Type", "application/octet-stream");
         req->WriteReply(HTTP_OK, binaryHeader);
         return true;
     }
 
-    case RetFormat::HEX: {
-        CDataStream ssHeader(SER_NETWORK, PROTOCOL_VERSION);
-        for (const CBlockIndex *pindex : headers) {
-            ssHeader << pindex->GetBlockHeader();
-        }
-
-        std::string strHex = HexStr(ssHeader) + "\n";
+    case RF_HEX: {
+        std::string strHex = HexStr(ssHeader.begin(), ssHeader.end()) + "\n";
         req->WriteHeader("Content-Type", "text/plain");
         req->WriteReply(HTTP_OK, strHex);
         return true;
     }
-    case RetFormat::JSON: {
+    case RF_JSON: {
         UniValue jsonHeaders(UniValue::VARR);
-        for (const CBlockIndex *pindex : headers) {
-            jsonHeaders.push_back(blockheaderToJSON(tip, pindex));
+        BOOST_FOREACH(const CBlockIndex *pindex, headers) {
+            jsonHeaders.push_back(blockheaderToJSON(pindex));
         }
         std::string strJSON = jsonHeaders.write() + "\n";
         req->WriteHeader("Content-Type", "application/json");
@@ -224,9 +189,12 @@ static bool rest_headers(const util::Ref& context,
         return true;
     }
     default: {
-        return RESTERR(req, HTTP_NOT_FOUND, "output format not found (available: .bin, .hex, .json)");
+        return RESTERR(req, HTTP_NOT_FOUND, "output format not found (available: .bin, .hex)");
     }
     }
+
+    // not reached
+    return true; // continue to process further HTTP reqs on this cxn
 }
 
 static bool rest_block(HTTPRequest* req,
@@ -243,44 +211,40 @@ static bool rest_block(HTTPRequest* req,
         return RESTERR(req, HTTP_BAD_REQUEST, "Invalid hash: " + hashStr);
 
     CBlock block;
-    CBlockIndex* pblockindex = nullptr;
-    CBlockIndex* tip = nullptr;
+    CBlockIndex* pblockindex = NULL;
     {
         LOCK(cs_main);
-        tip = ::ChainActive().Tip();
-        pblockindex = g_chainman.m_blockman.LookupBlockIndex(hash);
-        if (!pblockindex) {
+        if (mapBlockIndex.count(hash) == 0)
             return RESTERR(req, HTTP_NOT_FOUND, hashStr + " not found");
-        }
 
-        if (IsBlockPruned(pblockindex))
+        pblockindex = mapBlockIndex[hash];
+        if (fHavePruned && !(pblockindex->nStatus & BLOCK_HAVE_DATA) && pblockindex->nTx > 0)
             return RESTERR(req, HTTP_NOT_FOUND, hashStr + " not available (pruned data)");
 
         if (!ReadBlockFromDisk(block, pblockindex, Params().GetConsensus()))
             return RESTERR(req, HTTP_NOT_FOUND, hashStr + " not found");
     }
 
+    CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags());
+    ssBlock << block;
+
     switch (rf) {
-    case RetFormat::BINARY: {
-        CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags());
-        ssBlock << block;
+    case RF_BINARY: {
         std::string binaryBlock = ssBlock.str();
         req->WriteHeader("Content-Type", "application/octet-stream");
         req->WriteReply(HTTP_OK, binaryBlock);
         return true;
     }
 
-    case RetFormat::HEX: {
-        CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags());
-        ssBlock << block;
-        std::string strHex = HexStr(ssBlock) + "\n";
+    case RF_HEX: {
+        std::string strHex = HexStr(ssBlock.begin(), ssBlock.end()) + "\n";
         req->WriteHeader("Content-Type", "text/plain");
         req->WriteReply(HTTP_OK, strHex);
         return true;
     }
 
-    case RetFormat::JSON: {
-        UniValue objBlock = blockToJSON(block, tip, pblockindex, showTxDetails);
+    case RF_JSON: {
+        UniValue objBlock = blockToJSON(block, pblockindex, showTxDetails);
         std::string strJSON = objBlock.write() + "\n";
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
@@ -291,22 +255,25 @@ static bool rest_block(HTTPRequest* req,
         return RESTERR(req, HTTP_NOT_FOUND, "output format not found (available: " + AvailableDataFormatsString() + ")");
     }
     }
+
+    // not reached
+    return true; // continue to process further HTTP reqs on this cxn
 }
 
-static bool rest_block_extended(const util::Ref& context, HTTPRequest* req, const std::string& strURIPart)
+static bool rest_block_extended(HTTPRequest* req, const std::string& strURIPart)
 {
     return rest_block(req, strURIPart, true);
 }
 
-static bool rest_block_notxdetails(const util::Ref& context, HTTPRequest* req, const std::string& strURIPart)
+static bool rest_block_notxdetails(HTTPRequest* req, const std::string& strURIPart)
 {
     return rest_block(req, strURIPart, false);
 }
 
 // A bit of a hack - dependency on a function defined in rpc/blockchain.cpp
-RPCHelpMan getblockchaininfo();
+UniValue getblockchaininfo(const JSONRPCRequest& request);
 
-static bool rest_chaininfo(const util::Ref& context, HTTPRequest* req, const std::string& strURIPart)
+static bool rest_chaininfo(HTTPRequest* req, const std::string& strURIPart)
 {
     if (!CheckWarmup(req))
         return false;
@@ -314,10 +281,10 @@ static bool rest_chaininfo(const util::Ref& context, HTTPRequest* req, const std
     const RetFormat rf = ParseDataFormat(param, strURIPart);
 
     switch (rf) {
-    case RetFormat::JSON: {
-        JSONRPCRequest jsonRequest(context);
+    case RF_JSON: {
+        JSONRPCRequest jsonRequest;
         jsonRequest.params = UniValue(UniValue::VARR);
-        UniValue chainInfoObject = getblockchaininfo().HandleRequest(jsonRequest);
+        UniValue chainInfoObject = getblockchaininfo(jsonRequest);
         std::string strJSON = chainInfoObject.write() + "\n";
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
@@ -327,20 +294,21 @@ static bool rest_chaininfo(const util::Ref& context, HTTPRequest* req, const std
         return RESTERR(req, HTTP_NOT_FOUND, "output format not found (available: json)");
     }
     }
+
+    // not reached
+    return true; // continue to process further HTTP reqs on this cxn
 }
 
-static bool rest_mempool_info(const util::Ref& context, HTTPRequest* req, const std::string& strURIPart)
+static bool rest_mempool_info(HTTPRequest* req, const std::string& strURIPart)
 {
     if (!CheckWarmup(req))
         return false;
-    const CTxMemPool* mempool = GetMemPool(context, req);
-    if (!mempool) return false;
     std::string param;
     const RetFormat rf = ParseDataFormat(param, strURIPart);
 
     switch (rf) {
-    case RetFormat::JSON: {
-        UniValue mempoolInfoObject = MempoolInfoToJSON(*mempool);
+    case RF_JSON: {
+        UniValue mempoolInfoObject = mempoolInfoToJSON();
 
         std::string strJSON = mempoolInfoObject.write() + "\n";
         req->WriteHeader("Content-Type", "application/json");
@@ -351,19 +319,21 @@ static bool rest_mempool_info(const util::Ref& context, HTTPRequest* req, const 
         return RESTERR(req, HTTP_NOT_FOUND, "output format not found (available: json)");
     }
     }
+
+    // not reached
+    return true; // continue to process further HTTP reqs on this cxn
 }
 
-static bool rest_mempool_contents(const util::Ref& context, HTTPRequest* req, const std::string& strURIPart)
+static bool rest_mempool_contents(HTTPRequest* req, const std::string& strURIPart)
 {
-    if (!CheckWarmup(req)) return false;
-    const CTxMemPool* mempool = GetMemPool(context, req);
-    if (!mempool) return false;
+    if (!CheckWarmup(req))
+        return false;
     std::string param;
     const RetFormat rf = ParseDataFormat(param, strURIPart);
 
     switch (rf) {
-    case RetFormat::JSON: {
-        UniValue mempoolObject = MempoolToJSON(*mempool, true);
+    case RF_JSON: {
+        UniValue mempoolObject = mempoolToJSON(true);
 
         std::string strJSON = mempoolObject.write() + "\n";
         req->WriteHeader("Content-Type", "application/json");
@@ -374,9 +344,12 @@ static bool rest_mempool_contents(const util::Ref& context, HTTPRequest* req, co
         return RESTERR(req, HTTP_NOT_FOUND, "output format not found (available: json)");
     }
     }
+
+    // not reached
+    return true; // continue to process further HTTP reqs on this cxn
 }
 
-static bool rest_tx(const util::Ref& context, HTTPRequest* req, const std::string& strURIPart)
+static bool rest_tx(HTTPRequest* req, const std::string& strURIPart)
 {
     if (!CheckWarmup(req))
         return false;
@@ -387,42 +360,32 @@ static bool rest_tx(const util::Ref& context, HTTPRequest* req, const std::strin
     if (!ParseHashStr(hashStr, hash))
         return RESTERR(req, HTTP_BAD_REQUEST, "Invalid hash: " + hashStr);
 
-    if (g_txindex) {
-        g_txindex->BlockUntilSyncedToCurrentChain();
-    }
-
-    const NodeContext* const node = GetNodeContext(context, req);
-    if (!node) return false;
+    CTransactionRef tx;
     uint256 hashBlock = uint256();
-    const CTransactionRef tx = GetTransaction(/* block_index */ nullptr, node->mempool.get(), hash, Params().GetConsensus(), hashBlock);
-    if (!tx) {
+    if (!GetTransaction(hash, tx, Params().GetConsensus(), hashBlock, true))
         return RESTERR(req, HTTP_NOT_FOUND, hashStr + " not found");
-    }
+
+    CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags());
+    ssTx << tx;
 
     switch (rf) {
-    case RetFormat::BINARY: {
-        CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags());
-        ssTx << tx;
-
+    case RF_BINARY: {
         std::string binaryTx = ssTx.str();
         req->WriteHeader("Content-Type", "application/octet-stream");
         req->WriteReply(HTTP_OK, binaryTx);
         return true;
     }
 
-    case RetFormat::HEX: {
-        CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags());
-        ssTx << tx;
-
-        std::string strHex = HexStr(ssTx) + "\n";
+    case RF_HEX: {
+        std::string strHex = HexStr(ssTx.begin(), ssTx.end()) + "\n";
         req->WriteHeader("Content-Type", "text/plain");
         req->WriteReply(HTTP_OK, strHex);
         return true;
     }
 
-    case RetFormat::JSON: {
+    case RF_JSON: {
         UniValue objTx(UniValue::VOBJ);
-        TxToUniv(*tx, hashBlock, objTx);
+        TxToJSON(*tx, hashBlock, objTx);
         std::string strJSON = objTx.write() + "\n";
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
@@ -433,9 +396,12 @@ static bool rest_tx(const util::Ref& context, HTTPRequest* req, const std::strin
         return RESTERR(req, HTTP_NOT_FOUND, "output format not found (available: " + AvailableDataFormatsString() + ")");
     }
     }
+
+    // not reached
+    return true; // continue to process further HTTP reqs on this cxn
 }
 
-static bool rest_getutxos(const util::Ref& context, HTTPRequest* req, const std::string& strURIPart)
+static bool rest_getutxos(HTTPRequest* req, const std::string& strURIPart)
 {
     if (!CheckWarmup(req))
         return false;
@@ -449,7 +415,7 @@ static bool rest_getutxos(const util::Ref& context, HTTPRequest* req, const std:
         boost::split(uriParts, strUriParams, boost::is_any_of("/"));
     }
 
-    // throw exception in case of an empty request
+    // throw exception in case of a empty request
     std::string strRequestMutable = req->ReadBody();
     if (strRequestMutable.length() == 0 && uriParts.size() == 0)
         return RESTERR(req, HTTP_BAD_REQUEST, "Error: empty request");
@@ -463,15 +429,17 @@ static bool rest_getutxos(const util::Ref& context, HTTPRequest* req, const std:
 
     if (uriParts.size() > 0)
     {
+
         //inputs is sent over URI scheme (/rest/getutxos/checkmempool/txid1-n/txid2-n/...)
-        if (uriParts[0] == "checkmempool") fCheckMemPool = true;
+        if (uriParts.size() > 0 && uriParts[0] == "checkmempool")
+            fCheckMemPool = true;
 
         for (size_t i = (fCheckMemPool) ? 1 : 0; i < uriParts.size(); i++)
         {
             uint256 txid;
             int32_t nOutput;
-            std::string strTxid = uriParts[i].substr(0, uriParts[i].find('-'));
-            std::string strOutput = uriParts[i].substr(uriParts[i].find('-')+1);
+            std::string strTxid = uriParts[i].substr(0, uriParts[i].find("-"));
+            std::string strOutput = uriParts[i].substr(uriParts[i].find("-")+1);
 
             if (!ParseInt32(strOutput, &nOutput) || !IsHex(strTxid))
                 return RESTERR(req, HTTP_BAD_REQUEST, "Parse error");
@@ -487,13 +455,13 @@ static bool rest_getutxos(const util::Ref& context, HTTPRequest* req, const std:
     }
 
     switch (rf) {
-    case RetFormat::HEX: {
+    case RF_HEX: {
         // convert hex to bin, continue then with bin part
         std::vector<unsigned char> strRequestV = ParseHex(strRequestMutable);
         strRequestMutable.assign(strRequestV.begin(), strRequestV.end());
     }
 
-    case RetFormat::BINARY: {
+    case RF_BINARY: {
         try {
             //deserialize only if user sent a request
             if (strRequestMutable.size() > 0)
@@ -506,14 +474,14 @@ static bool rest_getutxos(const util::Ref& context, HTTPRequest* req, const std:
                 oss >> fCheckMemPool;
                 oss >> vOutPoints;
             }
-        } catch (const std::ios_base::failure&) {
+        } catch (const std::ios_base::failure& e) {
             // abort in case of unreadable binary data
             return RESTERR(req, HTTP_BAD_REQUEST, "Parse error");
         }
         break;
     }
 
-    case RetFormat::JSON: {
+    case RF_JSON: {
         if (!fInputParsed)
             return RESTERR(req, HTTP_BAD_REQUEST, "Error: empty request");
         break;
@@ -534,41 +502,48 @@ static bool rest_getutxos(const util::Ref& context, HTTPRequest* req, const std:
     std::vector<bool> hits;
     bitmap.resize((vOutPoints.size() + 7) / 8);
     {
-        auto process_utxos = [&vOutPoints, &outs, &hits](const CCoinsView& view, const CTxMemPool& mempool) {
-            for (const COutPoint& vOutPoint : vOutPoints) {
-                Coin coin;
-                bool hit = !mempool.isSpent(vOutPoint) && view.GetCoin(vOutPoint, coin);
-                hits.push_back(hit);
-                if (hit) outs.emplace_back(std::move(coin));
+        LOCK2(cs_main, mempool.cs);
+
+        CCoinsView viewDummy;
+        CCoinsViewCache view(&viewDummy);
+
+        CCoinsViewCache& viewChain = *pcoinsTip;
+        CCoinsViewMemPool viewMempool(&viewChain, mempool);
+
+        if (fCheckMemPool)
+            view.SetBackend(viewMempool); // switch cache backend to db+mempool in case user likes to query mempool
+
+        for (size_t i = 0; i < vOutPoints.size(); i++) {
+            CCoins coins;
+            uint256 hash = vOutPoints[i].hash;
+            bool hit = false;
+            if (view.GetCoins(hash, coins)) {
+                mempool.pruneSpent(hash, coins);
+                if (coins.IsAvailable(vOutPoints[i].n)) {
+                    hit = true;
+                    // Safe to index into vout here because IsAvailable checked if it's off the end of the array, or if
+                    // n is valid but points to an already spent output (IsNull).
+                    CCoin coin;
+                    coin.nTxVer = coins.nVersion;
+                    coin.nHeight = coins.nHeight;
+                    coin.out = coins.vout.at(vOutPoints[i].n);
+                    assert(!coin.out.IsNull());
+                    outs.push_back(coin);
+                }
             }
-        };
 
-        if (fCheckMemPool) {
-            const CTxMemPool* mempool = GetMemPool(context, req);
-            if (!mempool) return false;
-            // use db+mempool as cache backend in case user likes to query mempool
-            LOCK2(cs_main, mempool->cs);
-            CCoinsViewCache& viewChain = ::ChainstateActive().CoinsTip();
-            CCoinsViewMemPool viewMempool(&viewChain, *mempool);
-            process_utxos(viewMempool, *mempool);
-        } else {
-            LOCK(cs_main);  // no need to lock mempool!
-            process_utxos(::ChainstateActive().CoinsTip(), CTxMemPool());
-        }
-
-        for (size_t i = 0; i < hits.size(); ++i) {
-            const bool hit = hits[i];
+            hits.push_back(hit);
             bitmapStringRepresentation.append(hit ? "1" : "0"); // form a binary string representation (human-readable for json output)
             bitmap[i / 8] |= ((uint8_t)hit) << (i % 8);
         }
     }
 
     switch (rf) {
-    case RetFormat::BINARY: {
+    case RF_BINARY: {
         // serialize data
         // use exact same output as mentioned in Bip64
         CDataStream ssGetUTXOResponse(SER_NETWORK, PROTOCOL_VERSION);
-        ssGetUTXOResponse << ::ChainActive().Height() << ::ChainActive().Tip()->GetBlockHash() << bitmap << outs;
+        ssGetUTXOResponse << chainActive.Height() << chainActive.Tip()->GetBlockHash() << bitmap << outs;
         std::string ssGetUTXOResponseString = ssGetUTXOResponse.str();
 
         req->WriteHeader("Content-Type", "application/octet-stream");
@@ -576,38 +551,39 @@ static bool rest_getutxos(const util::Ref& context, HTTPRequest* req, const std:
         return true;
     }
 
-    case RetFormat::HEX: {
+    case RF_HEX: {
         CDataStream ssGetUTXOResponse(SER_NETWORK, PROTOCOL_VERSION);
-        ssGetUTXOResponse << ::ChainActive().Height() << ::ChainActive().Tip()->GetBlockHash() << bitmap << outs;
-        std::string strHex = HexStr(ssGetUTXOResponse) + "\n";
+        ssGetUTXOResponse << chainActive.Height() << chainActive.Tip()->GetBlockHash() << bitmap << outs;
+        std::string strHex = HexStr(ssGetUTXOResponse.begin(), ssGetUTXOResponse.end()) + "\n";
 
         req->WriteHeader("Content-Type", "text/plain");
         req->WriteReply(HTTP_OK, strHex);
         return true;
     }
 
-    case RetFormat::JSON: {
+    case RF_JSON: {
         UniValue objGetUTXOResponse(UniValue::VOBJ);
 
         // pack in some essentials
         // use more or less the same output as mentioned in Bip64
-        objGetUTXOResponse.pushKV("chainHeight", ::ChainActive().Height());
-        objGetUTXOResponse.pushKV("chaintipHash", ::ChainActive().Tip()->GetBlockHash().GetHex());
-        objGetUTXOResponse.pushKV("bitmap", bitmapStringRepresentation);
+        objGetUTXOResponse.push_back(Pair("chainHeight", chainActive.Height()));
+        objGetUTXOResponse.push_back(Pair("chaintipHash", chainActive.Tip()->GetBlockHash().GetHex()));
+        objGetUTXOResponse.push_back(Pair("bitmap", bitmapStringRepresentation));
 
         UniValue utxos(UniValue::VARR);
-        for (const CCoin& coin : outs) {
+        BOOST_FOREACH (const CCoin& coin, outs) {
             UniValue utxo(UniValue::VOBJ);
-            utxo.pushKV("height", (int32_t)coin.nHeight);
-            utxo.pushKV("value", ValueFromAmount(coin.out.nValue));
+            utxo.push_back(Pair("txvers", (int32_t)coin.nTxVer));
+            utxo.push_back(Pair("height", (int32_t)coin.nHeight));
+            utxo.push_back(Pair("value", ValueFromAmount(coin.out.nValue)));
 
             // include the script in a json output
             UniValue o(UniValue::VOBJ);
-            ScriptPubKeyToUniv(coin.out.scriptPubKey, o, true);
-            utxo.pushKV("scriptPubKey", o);
+            ScriptPubKeyToJSON(coin.out.scriptPubKey, o, true);
+            utxo.push_back(Pair("scriptPubKey", o));
             utxos.push_back(utxo);
         }
-        objGetUTXOResponse.pushKV("utxos", utxos);
+        objGetUTXOResponse.push_back(Pair("utxos", utxos));
 
         // return json string
         std::string strJSON = objGetUTXOResponse.write() + "\n";
@@ -619,57 +595,14 @@ static bool rest_getutxos(const util::Ref& context, HTTPRequest* req, const std:
         return RESTERR(req, HTTP_NOT_FOUND, "output format not found (available: " + AvailableDataFormatsString() + ")");
     }
     }
-}
 
-static bool rest_blockhash_by_height(const util::Ref& context, HTTPRequest* req,
-                       const std::string& str_uri_part)
-{
-    if (!CheckWarmup(req)) return false;
-    std::string height_str;
-    const RetFormat rf = ParseDataFormat(height_str, str_uri_part);
-
-    int32_t blockheight = -1; // Initialization done only to prevent valgrind false positive, see https://github.com/bitcoin/bitcoin/pull/18785
-    if (!ParseInt32(height_str, &blockheight) || blockheight < 0) {
-        return RESTERR(req, HTTP_BAD_REQUEST, "Invalid height: " + SanitizeString(height_str));
-    }
-
-    CBlockIndex* pblockindex = nullptr;
-    {
-        LOCK(cs_main);
-        if (blockheight > ::ChainActive().Height()) {
-            return RESTERR(req, HTTP_NOT_FOUND, "Block height out of range");
-        }
-        pblockindex = ::ChainActive()[blockheight];
-    }
-    switch (rf) {
-    case RetFormat::BINARY: {
-        CDataStream ss_blockhash(SER_NETWORK, PROTOCOL_VERSION);
-        ss_blockhash << pblockindex->GetBlockHash();
-        req->WriteHeader("Content-Type", "application/octet-stream");
-        req->WriteReply(HTTP_OK, ss_blockhash.str());
-        return true;
-    }
-    case RetFormat::HEX: {
-        req->WriteHeader("Content-Type", "text/plain");
-        req->WriteReply(HTTP_OK, pblockindex->GetBlockHash().GetHex() + "\n");
-        return true;
-    }
-    case RetFormat::JSON: {
-        req->WriteHeader("Content-Type", "application/json");
-        UniValue resp = UniValue(UniValue::VOBJ);
-        resp.pushKV("blockhash", pblockindex->GetBlockHash().GetHex());
-        req->WriteReply(HTTP_OK, resp.write() + "\n");
-        return true;
-    }
-    default: {
-        return RESTERR(req, HTTP_NOT_FOUND, "output format not found (available: " + AvailableDataFormatsString() + ")");
-    }
-    }
+    // not reached
+    return true; // continue to process further HTTP reqs on this cxn
 }
 
 static const struct {
     const char* prefix;
-    bool (*handler)(const util::Ref& context, HTTPRequest* req, const std::string& strReq);
+    bool (*handler)(HTTPRequest* req, const std::string& strReq);
 } uri_prefixes[] = {
       {"/rest/tx/", rest_tx},
       {"/rest/block/notxdetails/", rest_block_notxdetails},
@@ -679,15 +612,13 @@ static const struct {
       {"/rest/mempool/contents", rest_mempool_contents},
       {"/rest/headers/", rest_headers},
       {"/rest/getutxos", rest_getutxos},
-      {"/rest/blockhashbyheight/", rest_blockhash_by_height},
 };
 
-void StartREST(const util::Ref& context)
+bool StartREST()
 {
-    for (const auto& up : uri_prefixes) {
-        auto handler = [&context, up](HTTPRequest* req, const std::string& prefix) { return up.handler(context, req, prefix); };
-        RegisterHTTPHandler(up.prefix, false, handler);
-    }
+    for (unsigned int i = 0; i < ARRAYLEN(uri_prefixes); i++)
+        RegisterHTTPHandler(uri_prefixes[i].prefix, false, uri_prefixes[i].handler);
+    return true;
 }
 
 void InterruptREST()
@@ -696,7 +627,6 @@ void InterruptREST()
 
 void StopREST()
 {
-    for (const auto& up : uri_prefixes) {
-        UnregisterHTTPHandler(up.prefix, false);
-    }
+    for (unsigned int i = 0; i < ARRAYLEN(uri_prefixes); i++)
+        UnregisterHTTPHandler(uri_prefixes[i].prefix, false);
 }

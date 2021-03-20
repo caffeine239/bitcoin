@@ -1,28 +1,11 @@
-*After branching off for a major version release of Bitcoin Core, use this
-template to create the initial release notes draft.*
+Bitcoin Core version 0.14.3 is now available from:
 
-*The release notes draft is a temporary file that can be added to by anyone. See
-[/doc/developer-notes.md#release-notes](/doc/developer-notes.md#release-notes)
-for the process.*
+  <https://bitcoin.org/bin/bitcoin-core-0.14.3/>
 
-*Create the draft, named* "*version* Release Notes Draft"
-*(e.g. "0.20.0 Release Notes Draft"), as a collaborative wiki in:*
+This is a new minor version release, including various bugfixes and
+performance improvements.
 
-https://github.com/bitcoin-core/bitcoin-devwiki/wiki/
-
-*Before the final release, move the notes back to this git repository.*
-
-*version* Release Notes Draft
-===============================
-
-Bitcoin Core version *version* is now available from:
-
-  <https://bitcoincore.org/bin/bitcoin-core-*version*/>
-
-This release includes new features, various bug fixes and performance
-improvements, as well as updated translations.
-
-Please report bugs using the issue tracker at GitHub:
+Please report bugs using the issue tracker at github:
 
   <https://github.com/bitcoin/bitcoin/issues>
 
@@ -30,90 +13,101 @@ To receive security and update notifications, please subscribe to:
 
   <https://bitcoincore.org/en/list/announcements/join/>
 
-How to Upgrade
-==============
-
-If you are running an older version, shut it down. Wait until it has completely
-shut down (which might take a few minutes in some cases), then run the
-installer (on Windows) or just copy over `/Applications/Bitcoin-Qt` (on Mac)
-or `bitcoind`/`bitcoin-qt` (on Linux).
-
-Upgrading directly from a version of Bitcoin Core that has reached its EOL is
-possible, but it might take some time if the data directory needs to be migrated. Old
-wallet versions of Bitcoin Core are generally supported.
-
 Compatibility
 ==============
 
-Bitcoin Core is supported and extensively tested on operating systems
-using the Linux kernel, macOS 10.14+, and Windows 7 and newer.  Bitcoin
-Core should also work on most other Unix-like systems but is not as
-frequently tested on them.  It is not recommended to use Bitcoin Core on
-unsupported systems.
+Bitcoin Core is extensively tested on multiple operating systems using
+the Linux kernel, macOS 10.8+, and Windows Vista and later.
 
-From Bitcoin Core 0.22.0 onwards, macOS versions earlier than 10.14 are no
-longer supported. Additionally, Bitcoin Core does not yet change appearance
-when macOS "dark mode" is activated.
+Microsoft ended support for Windows XP on [April 8th, 2014](https://www.microsoft.com/en-us/WindowsForBusiness/end-of-xp-support),
+No attempt is made to prevent installing or running the software on Windows XP, you
+can still do so at your own risk but be aware that there are known instabilities and issues.
+Please do not report issues about Windows XP to the issue tracker.
+
+Bitcoin Core should also work on most other Unix-like systems but is not
+frequently tested on them.
 
 Notable changes
 ===============
 
-P2P and network changes
------------------------
+Denial-of-Service vulnerability CVE-2018-17144
+ -------------------------------
 
-Updated RPCs
-------------
-- `getpeerinfo` no longer returns the following fields: `addnode`, `banscore`,
-  and `whitelisted`, which were previously deprecated in 0.21. Instead of
-  `addnode`, the `connection_type` field returns manual. Instead of
-  `whitelisted`, the `permissions` field indicates if the peer has special
-  privileges. The `banscore` field has simply been removed. (#20755)
+A denial-of-service vulnerability exploitable by miners has been discovered in
+Bitcoin Core versions 0.14.0 up to 0.16.2. It is recommended to upgrade any of
+the vulnerable versions to 0.14.3, 0.15.2 or 0.16.3 as soon as possible.
 
-Changes to Wallet or GUI related RPCs can be found in the GUI or Wallet section below.
+Known Bugs
+==========
 
-New RPCs
---------
+Since 0.14.0 the approximate transaction fee shown in Bitcoin-Qt when using coin
+control and smart fee estimation does not reflect any change in target from the
+smart fee slider. It will only present an approximate fee calculated using the
+default target. The fee calculated using the correct target is still applied to
+the transaction and shown in the final send confirmation dialog.
 
-Build System
-------------
-
-New settings
-------------
-
-Updated settings
-----------------
-
-Changes to Wallet or GUI related settings can be found in the GUI or Wallet section below.
-
-- Passing an invalid `-rpcauth` argument now cause bitcoind to fail to start.  (#20461)
-
-Tools and Utilities
--------------------
-
-Wallet
-------
-
-- A new `listdescriptors` RPC is available to inspect the contents of descriptor-enabled wallets.
-  The RPC returns public versions of all imported descriptors, including their timestamp and flags.
-  For ranged descriptors, it also returns the range boundaries and the next index to generate addresses from. (#20226)
-
-GUI changes
------------
-
-Low-level changes
+0.14.3 Change log
 =================
 
-RPC
----
+Detailed release notes follow. This overview includes changes that affect
+behavior, not code moves, refactors and string updates. For convenience in locating
+the code changes and accompanying discussion, both the pull request and
+git merge commit are mentioned.
 
-Tests
------
+### Consensus
+- #14247 `52965fb` Fix crash bug with duplicate inputs within a transaction (TheBlueMatt, sdaftuar)
+ 
+### RPC and other APIs
+
+- #10445 `87a21d5` Fix: make CCoinsViewDbCursor::Seek work for missing keys (Pieter Wuille, Gregory Maxwell)
+- #9853 Return correct error codes in setban(), fundrawtransaction(), removeprunedfunds(), bumpfee(), blockchain.cpp (John Newbery)
+
+
+### P2P protocol and network code
+
+- #10234 `d289b56` [net] listbanned RPC and QT should show correct banned subnets (John Newbery)
+
+### Build system
+
+
+### Miscellaneous
+
+- #10451 `3612219` contrib/init/bitcoind.openrcconf: Don't disable wallet by default (Luke Dashjr)
+- #10250 `e23cef0` Fix some empty vector references (Pieter Wuille)
+- #10196 `d28d583` PrioritiseTransaction updates the mempool tx counter (Suhas Daftuar)
+- #9497 `e207342` Fix CCheckQueue IsIdle (potential) race condition and remove dangerous constructors. (Jeremy Rubin)
+
+### GUI
+
+- #9481 `7abe7bb` Give fallback fee a reasonable indent (Luke Dashjr)
+- #9481 `3e4d7bf` Qt/Send: Figure a decent warning colour from theme (Luke Dashjr)
+- #9481 `e207342` Show more significant warning if we fall back to the default fee (Jonas Schnelli)
+
+### Wallet
+
+- #10308 `28b8b8b` Securely erase potentially sensitive keys/values (tjps)
+- #10265 `ff13f59` Make sure pindex is non-null before possibly referencing in LogPrintf call. (Karl-Johan Alm)
 
 Credits
 =======
 
 Thanks to everyone who directly contributed to this release:
 
-
-As well as to everyone that helped with translations on
-[Transifex](https://www.transifex.com/bitcoin/bitcoin/).
+- Cory Fields
+- CryptAxe
+- fanquake
+- Jeremy Rubin
+- John Newbery
+- Jonas Schnelli
+- Gregory Maxwell
+- Karl-Johan Alm
+- Luke Dashjr
+- MarcoFalke
+- Matt Corallo
+- Mikerah
+- Pieter Wuille
+- practicalswift
+- Suhas Daftuar
+- Thomas Snider
+- Tjps
+- Wladimir J. van der Laan
