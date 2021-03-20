@@ -1,98 +1,118 @@
-# Copyright (c) 2013-2016 The Bitcoin Core developers
+# Copyright (c) 2013-2016 The Muskcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-bin_PROGRAMS += qt/bitcoin-qt
-EXTRA_LIBRARIES += qt/libbitcoinqt.a
+bin_PROGRAMS += qt/muskcoin-qt
+EXTRA_LIBRARIES += qt/libmuskcoinqt.a
 
-# bitcoin qt core #
+# muskcoin qt core #
 QT_TS = \
-  qt/locale/bitcoin_af.ts \
-  qt/locale/bitcoin_af_ZA.ts \
-  qt/locale/bitcoin_ar.ts \
-  qt/locale/bitcoin_be_BY.ts \
-  qt/locale/bitcoin_bg_BG.ts \
-  qt/locale/bitcoin_bg.ts \
-  qt/locale/bitcoin_ca_ES.ts \
-  qt/locale/bitcoin_ca.ts \
-  qt/locale/bitcoin_ca@valencia.ts \
-  qt/locale/bitcoin_cs.ts \
-  qt/locale/bitcoin_cy.ts \
-  qt/locale/bitcoin_da.ts \
-  qt/locale/bitcoin_de.ts \
-  qt/locale/bitcoin_el_GR.ts \
-  qt/locale/bitcoin_el.ts \
-  qt/locale/bitcoin_en_GB.ts \
-  qt/locale/bitcoin_en.ts \
-  qt/locale/bitcoin_eo.ts \
-  qt/locale/bitcoin_es_AR.ts \
-  qt/locale/bitcoin_es_CL.ts \
-  qt/locale/bitcoin_es_CO.ts \
-  qt/locale/bitcoin_es_DO.ts \
-  qt/locale/bitcoin_es_ES.ts \
-  qt/locale/bitcoin_es_MX.ts \
-  qt/locale/bitcoin_es.ts \
-  qt/locale/bitcoin_es_UY.ts \
-  qt/locale/bitcoin_es_VE.ts \
-  qt/locale/bitcoin_et_EE.ts \
-  qt/locale/bitcoin_et.ts \
-  qt/locale/bitcoin_eu_ES.ts \
-  qt/locale/bitcoin_fa_IR.ts \
-  qt/locale/bitcoin_fa.ts \
-  qt/locale/bitcoin_fi.ts \
-  qt/locale/bitcoin_fr_CA.ts \
-  qt/locale/bitcoin_fr_FR.ts \
-  qt/locale/bitcoin_fr.ts \
-  qt/locale/bitcoin_gl.ts \
-  qt/locale/bitcoin_he.ts \
-  qt/locale/bitcoin_hi_IN.ts \
-  qt/locale/bitcoin_hr.ts \
-  qt/locale/bitcoin_hu.ts \
-  qt/locale/bitcoin_id_ID.ts \
-  qt/locale/bitcoin_it_IT.ts \
-  qt/locale/bitcoin_it.ts \
-  qt/locale/bitcoin_ja.ts \
-  qt/locale/bitcoin_ka.ts \
-  qt/locale/bitcoin_kk_KZ.ts \
-  qt/locale/bitcoin_ko_KR.ts \
-  qt/locale/bitcoin_ku_IQ.ts \
-  qt/locale/bitcoin_ky.ts \
-  qt/locale/bitcoin_la.ts \
-  qt/locale/bitcoin_lt.ts \
-  qt/locale/bitcoin_lv_LV.ts \
-  qt/locale/bitcoin_mk_MK.ts \
-  qt/locale/bitcoin_mn.ts \
-  qt/locale/bitcoin_ms_MY.ts \
-  qt/locale/bitcoin_nb.ts \
-  qt/locale/bitcoin_ne.ts \
-  qt/locale/bitcoin_nl.ts \
-  qt/locale/bitcoin_pam.ts \
-  qt/locale/bitcoin_pl.ts \
-  qt/locale/bitcoin_pt_BR.ts \
-  qt/locale/bitcoin_pt_PT.ts \
-  qt/locale/bitcoin_ro_RO.ts \
-  qt/locale/bitcoin_ro.ts \
-  qt/locale/bitcoin_ru_RU.ts \
-  qt/locale/bitcoin_ru.ts \
-  qt/locale/bitcoin_sk.ts \
-  qt/locale/bitcoin_sl_SI.ts \
-  qt/locale/bitcoin_sq.ts \
-  qt/locale/bitcoin_sr@latin.ts \
-  qt/locale/bitcoin_sr.ts \
-  qt/locale/bitcoin_sv.ts \
-  qt/locale/bitcoin_ta.ts \
-  qt/locale/bitcoin_th_TH.ts \
-  qt/locale/bitcoin_tr_TR.ts \
-  qt/locale/bitcoin_tr.ts \
-  qt/locale/bitcoin_uk.ts \
-  qt/locale/bitcoin_ur_PK.ts \
-  qt/locale/bitcoin_uz@Cyrl.ts \
-  qt/locale/bitcoin_vi.ts \
-  qt/locale/bitcoin_vi_VN.ts \
-  qt/locale/bitcoin_zh_CN.ts \
-  qt/locale/bitcoin_zh_HK.ts \
-  qt/locale/bitcoin_zh.ts \
-  qt/locale/bitcoin_zh_TW.ts
+  qt/locale/muskcoin_af.ts \
+  qt/locale/muskcoin_am.ts \
+  qt/locale/muskcoin_ar.ts \
+  qt/locale/muskcoin_be.ts \
+  qt/locale/muskcoin_be_BY.ts \
+  qt/locale/muskcoin_bg.ts \
+  qt/locale/muskcoin_bn.ts \
+  qt/locale/muskcoin_bs.ts \
+  qt/locale/muskcoin_ca.ts \
+  qt/locale/muskcoin_cs.ts \
+  qt/locale/muskcoin_cs_CZ.ts \
+  qt/locale/muskcoin_cy.ts \
+  qt/locale/muskcoin_da.ts \
+  qt/locale/muskcoin_de.ts \
+  qt/locale/muskcoin_de_DE.ts \
+  qt/locale/muskcoin_el.ts \
+  qt/locale/muskcoin_el_GR.ts \
+  qt/locale/muskcoin_en.ts \
+  qt/locale/muskcoin_en_AU.ts \
+  qt/locale/muskcoin_en_GB.ts \
+  qt/locale/muskcoin_eo.ts \
+  qt/locale/muskcoin_es.ts \
+  qt/locale/muskcoin_es_CL.ts \
+  qt/locale/muskcoin_es_CO.ts \
+  qt/locale/muskcoin_es_DO.ts \
+  qt/locale/muskcoin_es_ES.ts \
+  qt/locale/muskcoin_es_MX.ts \
+  qt/locale/muskcoin_es_VE.ts \
+  qt/locale/muskcoin_et.ts \
+  qt/locale/muskcoin_et_EE.ts \
+  qt/locale/muskcoin_eu_ES.ts \
+  qt/locale/muskcoin_fa.ts \
+  qt/locale/muskcoin_fi.ts \
+  qt/locale/muskcoin_fil.ts \
+  qt/locale/muskcoin_fr.ts \
+  qt/locale/muskcoin_fr_CA.ts \
+  qt/locale/muskcoin_fr_FR.ts \
+  qt/locale/muskcoin_gl.ts \
+  qt/locale/muskcoin_he.ts \
+  qt/locale/muskcoin_he_IL.ts \
+  qt/locale/muskcoin_hi.ts \
+  qt/locale/muskcoin_hr.ts \
+  qt/locale/muskcoin_hu.ts \
+  qt/locale/muskcoin_hu_HU.ts \
+  qt/locale/muskcoin_id.ts \
+  qt/locale/muskcoin_id_ID.ts \
+  qt/locale/muskcoin_is.ts \
+  qt/locale/muskcoin_it.ts \
+  qt/locale/muskcoin_it_IT.ts \
+  qt/locale/muskcoin_ja.ts \
+  qt/locale/muskcoin_ka.ts \
+  qt/locale/muskcoin_kk.ts \
+  qt/locale/muskcoin_km.ts \
+  qt/locale/muskcoin_ko.ts \
+  qt/locale/muskcoin_ku_IQ.ts \
+  qt/locale/muskcoin_ky.ts \
+  qt/locale/muskcoin_la.ts \
+  qt/locale/muskcoin_lt.ts \
+  qt/locale/muskcoin_lv.ts \
+  qt/locale/muskcoin_lv_LV.ts \
+  qt/locale/muskcoin_mk.ts \
+  qt/locale/muskcoin_ml.ts \
+  qt/locale/muskcoin_mn.ts \
+  qt/locale/muskcoin_mr_IN.ts \
+  qt/locale/muskcoin_ms.ts \
+  qt/locale/muskcoin_ms_MY.ts \
+  qt/locale/muskcoin_my.ts \
+  qt/locale/muskcoin_nb.ts \
+  qt/locale/muskcoin_ne.ts \
+  qt/locale/muskcoin_nl.ts \
+  qt/locale/muskcoin_nl_NL.ts \
+  qt/locale/muskcoin_pam.ts \
+  qt/locale/muskcoin_pl.ts \
+  qt/locale/muskcoin_pt.ts \
+  qt/locale/muskcoin_pt_BR.ts \
+  qt/locale/muskcoin_pt_PT.ts \
+  qt/locale/muskcoin_ro.ts \
+  qt/locale/muskcoin_ro_RO.ts \
+  qt/locale/muskcoin_ru.ts \
+  qt/locale/muskcoin_ru_RU.ts \
+  qt/locale/muskcoin_si.ts \
+  qt/locale/muskcoin_sk.ts \
+  qt/locale/muskcoin_sl.ts \
+  qt/locale/muskcoin_sl_SI.ts \
+  qt/locale/muskcoin_sn.ts \
+  qt/locale/muskcoin_sq.ts \
+  qt/locale/muskcoin_sr.ts \
+  qt/locale/muskcoin_sr@latin.ts \
+  qt/locale/muskcoin_sv.ts \
+  qt/locale/muskcoin_szl.ts \
+  qt/locale/muskcoin_ta.ts \
+  qt/locale/muskcoin_te.ts \
+  qt/locale/muskcoin_th.ts \
+  qt/locale/muskcoin_tr.ts \
+  qt/locale/muskcoin_tr_TR.ts \
+  qt/locale/muskcoin_uk.ts \
+  qt/locale/muskcoin_uk_UA.ts \
+  qt/locale/muskcoin_ur.ts \
+  qt/locale/muskcoin_uz@Cyrl.ts \
+  qt/locale/muskcoin_vi.ts \
+  qt/locale/muskcoin_vi_VN.ts \
+  qt/locale/muskcoin_zh-Hans.ts \
+  qt/locale/muskcoin_zh.ts \
+  qt/locale/muskcoin_zh_CN.ts \
+  qt/locale/muskcoin_zh_HK.ts \
+  qt/locale/muskcoin_zh_TW.ts
 
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
@@ -118,10 +138,11 @@ QT_MOC_CPP = \
   qt/moc_addresstablemodel.cpp \
   qt/moc_askpassphrasedialog.cpp \
   qt/moc_bantablemodel.cpp \
-  qt/moc_bitcoinaddressvalidator.cpp \
-  qt/moc_bitcoinamountfield.cpp \
-  qt/moc_bitcoingui.cpp \
-  qt/moc_bitcoinunits.cpp \
+  qt/moc_muskcoinaddressvalidator.cpp \
+  qt/moc_muskcoinamountfield.cpp \
+  qt/moc_muskcoingui.cpp \
+  qt/moc_muskcoinunits.cpp \
+  qt/moc_callback.cpp \
   qt/moc_clientmodel.cpp \
   qt/moc_coincontroldialog.cpp \
   qt/moc_coincontroltreewidget.cpp \
@@ -160,35 +181,37 @@ QT_MOC_CPP = \
   qt/moc_walletmodel.cpp \
   qt/moc_walletview.cpp
 
-BITCOIN_MM = \
+MUSKCOIN_MM = \
   qt/macdockiconhandler.mm \
   qt/macnotificationhandler.mm
 
 QT_MOC = \
-  qt/bitcoin.moc \
-  qt/bitcoinamountfield.moc \
+  qt/muskcoin.moc \
+  qt/muskcoinamountfield.moc \
+  qt/callback.moc \
   qt/intro.moc \
   qt/overviewpage.moc \
   qt/rpcconsole.moc
 
-QT_QRC_CPP = qt/qrc_bitcoin.cpp
-QT_QRC = qt/bitcoin.qrc
-QT_QRC_LOCALE_CPP = qt/qrc_bitcoin_locale.cpp
-QT_QRC_LOCALE = qt/bitcoin_locale.qrc
+QT_QRC_CPP = qt/qrc_muskcoin.cpp
+QT_QRC = qt/muskcoin.qrc
+QT_QRC_LOCALE_CPP = qt/qrc_muskcoin_locale.cpp
+QT_QRC_LOCALE = qt/muskcoin_locale.qrc
 
 PROTOBUF_CC = qt/paymentrequest.pb.cc
 PROTOBUF_H = qt/paymentrequest.pb.h
 PROTOBUF_PROTO = qt/paymentrequest.proto
 
-BITCOIN_QT_H = \
+MUSKCOIN_QT_H = \
   qt/addressbookpage.h \
   qt/addresstablemodel.h \
   qt/askpassphrasedialog.h \
   qt/bantablemodel.h \
-  qt/bitcoinaddressvalidator.h \
-  qt/bitcoinamountfield.h \
-  qt/bitcoingui.h \
-  qt/bitcoinunits.h \
+  qt/muskcoinaddressvalidator.h \
+  qt/muskcoinamountfield.h \
+  qt/muskcoingui.h \
+  qt/muskcoinunits.h \
+  qt/callback.h \
   qt/clientmodel.h \
   qt/coincontroldialog.h \
   qt/coincontroltreewidget.h \
@@ -239,9 +262,9 @@ RES_ICONS = \
   qt/res/icons/address-book.png \
   qt/res/icons/about.png \
   qt/res/icons/about_qt.png \
-  qt/res/icons/bitcoin.ico \
-  qt/res/icons/bitcoin_testnet.ico \
-  qt/res/icons/bitcoin.png \
+  qt/res/icons/muskcoin.ico \
+  qt/res/icons/muskcoin_testnet.ico \
+  qt/res/icons/muskcoin.png \
   qt/res/icons/chevron.png \
   qt/res/icons/clock1.png \
   qt/res/icons/clock2.png \
@@ -275,6 +298,7 @@ RES_ICONS = \
   qt/res/icons/network_disabled.png \
   qt/res/icons/open.png \
   qt/res/icons/overview.png \
+  qt/res/icons/proxy.png \
   qt/res/icons/quit.png \
   qt/res/icons/receive.png \
   qt/res/icons/remove.png \
@@ -291,12 +315,12 @@ RES_ICONS = \
   qt/res/icons/warning.png \
   qt/res/icons/verify.png
 
-BITCOIN_QT_BASE_CPP = \
+MUSKCOIN_QT_BASE_CPP = \
   qt/bantablemodel.cpp \
-  qt/bitcoinaddressvalidator.cpp \
-  qt/bitcoinamountfield.cpp \
-  qt/bitcoingui.cpp \
-  qt/bitcoinunits.cpp \
+  qt/muskcoinaddressvalidator.cpp \
+  qt/muskcoinamountfield.cpp \
+  qt/muskcoingui.cpp \
+  qt/muskcoinunits.cpp \
   qt/clientmodel.cpp \
   qt/csvmodelwriter.cpp \
   qt/guiutil.cpp \
@@ -315,9 +339,9 @@ BITCOIN_QT_BASE_CPP = \
   qt/trafficgraphwidget.cpp \
   qt/utilitydialog.cpp
 
-BITCOIN_QT_WINDOWS_CPP = qt/winshutdownmonitor.cpp
+MUSKCOIN_QT_WINDOWS_CPP = qt/winshutdownmonitor.cpp
 
-BITCOIN_QT_WALLET_CPP = \
+MUSKCOIN_QT_WALLET_CPP = \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
@@ -345,31 +369,31 @@ BITCOIN_QT_WALLET_CPP = \
   qt/walletmodeltransaction.cpp \
   qt/walletview.cpp
 
-BITCOIN_QT_CPP = $(BITCOIN_QT_BASE_CPP)
+MUSKCOIN_QT_CPP = $(MUSKCOIN_QT_BASE_CPP)
 if TARGET_WINDOWS
-BITCOIN_QT_CPP += $(BITCOIN_QT_WINDOWS_CPP)
+MUSKCOIN_QT_CPP += $(MUSKCOIN_QT_WINDOWS_CPP)
 endif
 if ENABLE_WALLET
-BITCOIN_QT_CPP += $(BITCOIN_QT_WALLET_CPP)
+MUSKCOIN_QT_CPP += $(MUSKCOIN_QT_WALLET_CPP)
 endif
 
-RES_IMAGES = 
+RES_IMAGES =
 
 RES_MOVIES = $(wildcard $(srcdir)/qt/res/movies/spinner-*.png)
 
-BITCOIN_RC = qt/res/bitcoin-qt-res.rc
+MUSKCOIN_RC = qt/res/muskcoin-qt-res.rc
 
-BITCOIN_QT_INCLUDES = -I$(builddir)/qt -I$(srcdir)/qt -I$(srcdir)/qt/forms \
-  -I$(builddir)/qt/forms -DQT_NO_KEYWORDS
+MUSKCOIN_QT_INCLUDES = -DQT_NO_KEYWORDS
 
-qt_libbitcoinqt_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
+qt_libmuskcoinqt_a_CPPFLAGS = $(AM_CPPFLAGS) $(MUSKCOIN_INCLUDES) $(MUSKCOIN_QT_INCLUDES) \
   $(QT_INCLUDES) $(QT_DBUS_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS)
-qt_libbitcoinqt_a_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
+qt_libmuskcoinqt_a_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
+qt_libmuskcoinqt_a_OBJCXXFLAGS = $(AM_OBJCXXFLAGS) $(QT_PIE_FLAGS)
 
-qt_libbitcoinqt_a_SOURCES = $(BITCOIN_QT_CPP) $(BITCOIN_QT_H) $(QT_FORMS_UI) \
+qt_libmuskcoinqt_a_SOURCES = $(MUSKCOIN_QT_CPP) $(MUSKCOIN_QT_H) $(QT_FORMS_UI) \
   $(QT_QRC) $(QT_QRC_LOCALE) $(QT_TS) $(PROTOBUF_PROTO) $(RES_ICONS) $(RES_IMAGES) $(RES_MOVIES)
 
-nodist_qt_libbitcoinqt_a_SOURCES = $(QT_MOC_CPP) $(QT_MOC) $(PROTOBUF_CC) \
+nodist_qt_libmuskcoinqt_a_SOURCES = $(QT_MOC_CPP) $(QT_MOC) $(PROTOBUF_CC) \
   $(PROTOBUF_H) $(QT_QRC_CPP) $(QT_QRC_LOCALE_CPP)
 
 # forms/foo.h -> forms/ui_foo.h
@@ -378,71 +402,71 @@ QT_FORMS_H=$(join $(dir $(QT_FORMS_UI)),$(addprefix ui_, $(notdir $(QT_FORMS_UI:
 # Most files will depend on the forms and moc files as includes. Generate them
 # before anything else.
 $(QT_MOC): $(QT_FORMS_H)
-$(qt_libbitcoinqt_a_OBJECTS) $(qt_bitcoin_qt_OBJECTS) : | $(QT_MOC)
+$(qt_libmuskcoinqt_a_OBJECTS) $(qt_muskcoin_qt_OBJECTS) : | $(QT_MOC)
 
 #Generating these with a half-written protobuf header leads to wacky results.
 #This makes sure it's done.
 $(QT_MOC): $(PROTOBUF_H)
 $(QT_MOC_CPP): $(PROTOBUF_H)
 
-# bitcoin-qt binary #
-qt_bitcoin_qt_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
+# muskcoin-qt binary #
+qt_muskcoin_qt_CPPFLAGS = $(AM_CPPFLAGS) $(MUSKCOIN_INCLUDES) $(MUSKCOIN_QT_INCLUDES) \
   $(QT_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS)
-qt_bitcoin_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
+qt_muskcoin_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
 
-qt_bitcoin_qt_SOURCES = qt/bitcoin.cpp
+qt_muskcoin_qt_SOURCES = qt/muskcoin.cpp
 if TARGET_DARWIN
-  qt_bitcoin_qt_SOURCES += $(BITCOIN_MM)
+  qt_muskcoin_qt_SOURCES += $(MUSKCOIN_MM)
 endif
 if TARGET_WINDOWS
-  qt_bitcoin_qt_SOURCES += $(BITCOIN_RC)
+  qt_muskcoin_qt_SOURCES += $(MUSKCOIN_RC)
 endif
-qt_bitcoin_qt_LDADD = qt/libbitcoinqt.a $(LIBBITCOIN_SERVER)
+qt_muskcoin_qt_LDADD = qt/libmuskcoinqt.a $(LIBMUSKCOIN_SERVER)
 if ENABLE_WALLET
-qt_bitcoin_qt_LDADD += $(LIBBITCOIN_WALLET)
+qt_muskcoin_qt_LDADD += $(LIBMUSKCOIN_UTIL) $(LIBMUSKCOIN_WALLET)
 endif
 if ENABLE_ZMQ
-qt_bitcoin_qt_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
+qt_muskcoin_qt_LDADD += $(LIBMUSKCOIN_ZMQ) $(ZMQ_LIBS)
 endif
-qt_bitcoin_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBMEMENV) \
+qt_muskcoin_qt_LDADD += $(LIBMUSKCOIN_CLI) $(LIBMUSKCOIN_COMMON) $(LIBMUSKCOIN_UTIL) $(LIBMUSKCOIN_CONSENSUS) $(LIBMUSKCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) \
   $(BOOST_LIBS) $(QT_LIBS) $(QT_DBUS_LIBS) $(QR_LIBS) $(PROTOBUF_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(LIBSECP256K1) \
   $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
-qt_bitcoin_qt_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
-qt_bitcoin_qt_LIBTOOLFLAGS = --tag CXX
+qt_muskcoin_qt_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+qt_muskcoin_qt_LIBTOOLFLAGS = $(AM_LIBTOOLFLAGS) --tag CXX
 
 #locale/foo.ts -> locale/foo.qm
 QT_QM=$(QT_TS:.ts=.qm)
 
 SECONDARY: $(QT_QM)
 
-$(srcdir)/qt/bitcoinstrings.cpp: $(libbitcoin_server_a_SOURCES) $(libbitcoin_wallet_a_SOURCES) $(libbitcoin_common_a_SOURCES) $(libbitcoin_zmq_a_SOURCES) $(libbitcoin_consensus_a_SOURCES) $(libbitcoin_util_a_SOURCES)
+$(srcdir)/qt/muskcoinstrings.cpp: $(libmuskcoin_server_a_SOURCES) $(libmuskcoin_wallet_a_SOURCES) $(libmuskcoin_common_a_SOURCES) $(libmuskcoin_zmq_a_SOURCES) $(libmuskcoin_consensus_a_SOURCES) $(libmuskcoin_util_a_SOURCES)
 	@test -n $(XGETTEXT) || echo "xgettext is required for updating translations"
 	$(AM_V_GEN) cd $(srcdir); XGETTEXT=$(XGETTEXT) PACKAGE_NAME="$(PACKAGE_NAME)" COPYRIGHT_HOLDERS="$(COPYRIGHT_HOLDERS)" COPYRIGHT_HOLDERS_SUBSTITUTION="$(COPYRIGHT_HOLDERS_SUBSTITUTION)" $(PYTHON) ../share/qt/extract_strings_qt.py $^
 
-translate: $(srcdir)/qt/bitcoinstrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(BITCOIN_QT_BASE_CPP) qt/bitcoin.cpp $(BITCOIN_QT_WINDOWS_CPP) $(BITCOIN_QT_WALLET_CPP) $(BITCOIN_QT_H) $(BITCOIN_MM)
+translate: $(srcdir)/qt/muskcoinstrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(MUSKCOIN_QT_BASE_CPP) qt/muskcoin.cpp $(MUSKCOIN_QT_WINDOWS_CPP) $(MUSKCOIN_QT_WALLET_CPP) $(MUSKCOIN_QT_H) $(MUSKCOIN_MM)
 	@test -n $(LUPDATE) || echo "lupdate is required for updating translations"
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -locations relative -no-obsolete -ts $(srcdir)/qt/locale/bitcoin_en.ts
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -locations relative -no-obsolete -ts $(srcdir)/qt/locale/muskcoin_en.ts
 
 $(QT_QRC_LOCALE_CPP): $(QT_QRC_LOCALE) $(QT_QM)
 	@test -f $(RCC)
 	@cp -f $< $(@D)/temp_$(<F)
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name bitcoin_locale $(@D)/temp_$(<F) | \
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name muskcoin_locale $(@D)/temp_$(<F) | \
 	  $(SED) -e '/^\*\*.*Created:/d' -e '/^\*\*.*by:/d' > $@
 	@rm $(@D)/temp_$(<F)
 
 $(QT_QRC_CPP): $(QT_QRC) $(QT_FORMS_H) $(RES_ICONS) $(RES_IMAGES) $(RES_MOVIES) $(PROTOBUF_H)
 	@test -f $(RCC)
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name bitcoin $< | \
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name muskcoin $< | \
 	  $(SED) -e '/^\*\*.*Created:/d' -e '/^\*\*.*by:/d' > $@
 
-CLEAN_QT = $(nodist_qt_libbitcoinqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda qt/*.gcno
+CLEAN_QT = $(nodist_qt_libmuskcoinqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda qt/*.gcno qt/temp_muskcoin_locale.qrc
 
 CLEANFILES += $(CLEAN_QT)
 
-bitcoin_qt_clean: FORCE
-	rm -f $(CLEAN_QT) $(qt_libbitcoinqt_a_OBJECTS) $(qt_bitcoin_qt_OBJECTS) qt/bitcoin-qt$(EXEEXT) $(LIBBITCOINQT)
+muskcoin_qt_clean: FORCE
+	rm -f $(CLEAN_QT) $(qt_libmuskcoinqt_a_OBJECTS) $(qt_muskcoin_qt_OBJECTS) qt/muskcoin-qt$(EXEEXT) $(LIBMUSKCOINQT)
 
-bitcoin_qt : qt/bitcoin-qt$(EXEEXT)
+muskcoin_qt : qt/muskcoin-qt$(EXEEXT)
 
 ui_%.h: %.ui
 	@test -f $(UIC)
