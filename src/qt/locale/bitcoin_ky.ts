@@ -1,8 +1,5 @@
 <TS language="ky" version="2.1">
 <context>
-    <name>AboutDialog</name>
-    </context>
-<context>
     <name>AddressBookPage</name>
     <message>
         <source>Create a new address</source>
@@ -28,6 +25,9 @@
     <name>AskPassphraseDialog</name>
     </context>
 <context>
+    <name>BanTableModel</name>
+    </context>
+<context>
     <name>BitcoinGUI</name>
     <message>
         <source>&amp;Transactions</source>
@@ -36,14 +36,6 @@
     <message>
         <source>&amp;Verify message...</source>
         <translation>Билдирүүнү &amp;текшерүү...</translation>
-    </message>
-    <message>
-        <source>Bitcoin</source>
-        <translation>Bitcoin</translation>
-    </message>
-    <message>
-        <source>Wallet</source>
-        <translation>Капчык</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -69,28 +61,27 @@
         <source>Up to date</source>
         <translation>Жаңыланган</translation>
     </message>
-    </context>
-<context>
-    <name>ClientModel</name>
+    <message>
+        <source>&amp;Window</source>
+        <translation>&amp;Терезе</translation>
+    </message>
     </context>
 <context>
     <name>CoinControlDialog</name>
-    <message>
-        <source>Address</source>
-        <translation>Дарек</translation>
-    </message>
     <message>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <source>none</source>
-        <translation>жок</translation>
-    </message>
-    <message>
         <source>(no label)</source>
         <translation>(аты жок)</translation>
     </message>
+    </context>
+<context>
+    <name>CreateWalletActivity</name>
+    </context>
+<context>
+    <name>CreateWalletDialog</name>
     </context>
 <context>
     <name>EditAddressDialog</name>
@@ -121,17 +112,23 @@
     </message>
     </context>
 <context>
+    <name>ModalOverlay</name>
+    </context>
+<context>
     <name>OpenURIDialog</name>
+    </context>
+<context>
+    <name>OpenWalletActivity</name>
     </context>
 <context>
     <name>OptionsDialog</name>
     <message>
-        <source>MB</source>
-        <translation>МБ</translation>
-    </message>
-    <message>
         <source>&amp;Network</source>
         <translation>&amp;Тармак</translation>
+    </message>
+    <message>
+        <source>W&amp;allet</source>
+        <translation>Капчык</translation>
     </message>
     <message>
         <source>&amp;Port:</source>
@@ -157,27 +154,25 @@
         <source>none</source>
         <translation>жок</translation>
     </message>
+    <message>
+        <source>Error</source>
+        <translation>Ката</translation>
+    </message>
     </context>
 <context>
     <name>OverviewPage</name>
-    <message>
-        <source>Wallet</source>
-        <translation>Капчык</translation>
-    </message>
-    <message>
-        <source>out of sync</source>
-        <translation>синхрондоштурулган эмес</translation>
-    </message>
-</context>
+    </context>
+<context>
+    <name>PSBTOperationsDialog</name>
+    </context>
 <context>
     <name>PaymentServer</name>
     </context>
 <context>
+    <name>PeerTableModel</name>
+    </context>
+<context>
     <name>QObject</name>
-    <message>
-        <source>Bitcoin</source>
-        <translation>Bitcoin</translation>
-    </message>
     </context>
 <context>
     <name>QRImageWidget</name>
@@ -191,6 +186,10 @@
     <message>
         <source>General</source>
         <translation>Жалпы</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation>&amp;Тармак</translation>
     </message>
     <message>
         <source>Name</source>
@@ -211,16 +210,16 @@
     </context>
 <context>
     <name>ReceiveCoinsDialog</name>
+    <message>
+        <source>&amp;Message:</source>
+        <translation>Билдирүү:</translation>
+    </message>
     </context>
 <context>
     <name>ReceiveRequestDialog</name>
     <message>
-        <source>Address</source>
-        <translation>Дарек</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation>Билдирүү</translation>
+        <source>Message:</source>
+        <translation>Билдирүү:</translation>
     </message>
     </context>
 <context>
@@ -252,7 +251,7 @@
         <source>(no label)</source>
         <translation>(аты жок)</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>SendCoinsEntry</name>
     <message>
@@ -279,17 +278,10 @@
     </message>
     </context>
 <context>
-    <name>SplashScreen</name>
-    </context>
-<context>
     <name>TrafficGraphWidget</name>
     </context>
 <context>
     <name>TransactionDesc</name>
-    <message>
-        <source>%1/offline</source>
-        <translation>%1/тармакта эмес</translation>
-    </message>
     <message>
         <source>Date</source>
         <translation>Дата</translation>
@@ -309,8 +301,8 @@
         <translation>Дата</translation>
     </message>
     <message>
-        <source>Address</source>
-        <translation>Дарек</translation>
+        <source>(no label)</source>
+        <translation>(аты жок)</translation>
     </message>
     </context>
 <context>
@@ -325,6 +317,12 @@
     </message>
     </context>
 <context>
+    <name>UnitDisplayStatusBarControl</name>
+    </context>
+<context>
+    <name>WalletController</name>
+    </context>
+<context>
     <name>WalletFrame</name>
     </context>
 <context>
@@ -332,24 +330,12 @@
     </context>
 <context>
     <name>WalletView</name>
-    </context>
-<context>
-    <name>bitcoin-core</name>
-    <message>
-        <source>Information</source>
-        <translation>Маалымат</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation>Эскертүү</translation>
-    </message>
-    <message>
-        <source>version</source>
-        <translation>версия</translation>
-    </message>
     <message>
         <source>Error</source>
         <translation>Ката</translation>
     </message>
+    </context>
+<context>
+    <name>bitcoin-core</name>
     </context>
 </TS>

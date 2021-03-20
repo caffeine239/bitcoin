@@ -1,59 +1,119 @@
-Bitcoin Core version 0.9.5 is now available from:
+*After branching off for a major version release of Bitcoin Core, use this
+template to create the initial release notes draft.*
 
-  https://bitcoin.org/bin/0.9.5/
+*The release notes draft is a temporary file that can be added to by anyone. See
+[/doc/developer-notes.md#release-notes](/doc/developer-notes.md#release-notes)
+for the process.*
 
-This is a new minor version release, bringing only bug fixes and updated
-translations. Upgrading to this release is recommended.
+*Create the draft, named* "*version* Release Notes Draft"
+*(e.g. "0.20.0 Release Notes Draft"), as a collaborative wiki in:*
 
-Please report bugs using the issue tracker at github:
+https://github.com/bitcoin-core/bitcoin-devwiki/wiki/
 
-  https://github.com/bitcoin/bitcoin/issues
+*Before the final release, move the notes back to this git repository.*
+
+*version* Release Notes Draft
+===============================
+
+Bitcoin Core version *version* is now available from:
+
+  <https://bitcoincore.org/bin/bitcoin-core-*version*/>
+
+This release includes new features, various bug fixes and performance
+improvements, as well as updated translations.
+
+Please report bugs using the issue tracker at GitHub:
+
+  <https://github.com/bitcoin/bitcoin/issues>
+
+To receive security and update notifications, please subscribe to:
+
+  <https://bitcoincore.org/en/list/announcements/join/>
 
 How to Upgrade
-===============
+==============
 
 If you are running an older version, shut it down. Wait until it has completely
-shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over /Applications/Bitcoin-Qt (on Mac) or
-bitcoind/bitcoin-qt (on Linux).
+shut down (which might take a few minutes in some cases), then run the
+installer (on Windows) or just copy over `/Applications/Bitcoin-Qt` (on Mac)
+or `bitcoind`/`bitcoin-qt` (on Linux).
+
+Upgrading directly from a version of Bitcoin Core that has reached its EOL is
+possible, but it might take some time if the data directory needs to be migrated. Old
+wallet versions of Bitcoin Core are generally supported.
+
+Compatibility
+==============
+
+Bitcoin Core is supported and extensively tested on operating systems
+using the Linux kernel, macOS 10.14+, and Windows 7 and newer.  Bitcoin
+Core should also work on most other Unix-like systems but is not as
+frequently tested on them.  It is not recommended to use Bitcoin Core on
+unsupported systems.
+
+From Bitcoin Core 0.22.0 onwards, macOS versions earlier than 10.14 are no
+longer supported. Additionally, Bitcoin Core does not yet change appearance
+when macOS "dark mode" is activated.
 
 Notable changes
-================
+===============
 
-Mining and relay policy enhancements
-------------------------------------
+P2P and network changes
+-----------------------
 
-Bitcoin Core's block templates are now for version 3 blocks only, and any mining
-software relying on its `getblocktemplate` must be updated in parallel to use
-libblkmaker either version 0.4.2 or any version from 0.5.1 onward.
-If you are solo mining, this will affect you the moment you upgrade Bitcoin
-Core, which must be done prior to BIP66 achieving its 951/1001 status.
-If you are mining with the stratum mining protocol: this does not affect you.
-If you are mining with the getblocktemplate protocol to a pool: this will affect
-you at the pool operator's discretion, which must be no later than BIP66
-achieving its 951/1001 status.
+Updated RPCs
+------------
+- `getpeerinfo` no longer returns the following fields: `addnode`, `banscore`,
+  and `whitelisted`, which were previously deprecated in 0.21. Instead of
+  `addnode`, the `connection_type` field returns manual. Instead of
+  `whitelisted`, the `permissions` field indicates if the peer has special
+  privileges. The `banscore` field has simply been removed. (#20755)
 
-0.9.5 changelog
-================
+Changes to Wallet or GUI related RPCs can be found in the GUI or Wallet section below.
 
-- `74f29c2` Check pindexBestForkBase for null
-- `9cd1dd9` Fix priority calculation in CreateTransaction
-- `6b4163b` Sanitize command strings before logging them.
-- `3230b32` Raise version of created blocks, and enforce DERSIG in mempool
-- `989d499` Backport of some of BIP66's tests
-- `ab03660` Implement BIP 66 validation rules and switchover logic
-- `8438074` build: fix dynamic boost check when --with-boost= is used
-
-Credits
+New RPCs
 --------
 
-Thanks to who contributed to this release, at least:
+Build System
+------------
 
-- 21E14
-- Alex Morcos
-- Cory Fields
-- Gregory Maxwell
-- Pieter Wuille
-- Wladimir J. van der Laan
+New settings
+------------
 
-As well as everyone that helped translating on [Transifex](https://www.transifex.com/projects/p/bitcoin/).
+Updated settings
+----------------
+
+Changes to Wallet or GUI related settings can be found in the GUI or Wallet section below.
+
+- Passing an invalid `-rpcauth` argument now cause bitcoind to fail to start.  (#20461)
+
+Tools and Utilities
+-------------------
+
+Wallet
+------
+
+- A new `listdescriptors` RPC is available to inspect the contents of descriptor-enabled wallets.
+  The RPC returns public versions of all imported descriptors, including their timestamp and flags.
+  For ranged descriptors, it also returns the range boundaries and the next index to generate addresses from. (#20226)
+
+GUI changes
+-----------
+
+Low-level changes
+=================
+
+RPC
+---
+
+Tests
+-----
+
+Credits
+=======
+
+Thanks to everyone who directly contributed to this release:
+
+
+As well as to everyone that helped with translations on
+[Transifex](https://www.transifex.com/bitcoin/bitcoin/).
