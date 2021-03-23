@@ -1,14 +1,14 @@
-// Copyright (c) 2011-2018 The Muskcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_UTILITYDIALOG_H
-#define MUSKCOIN_QT_UTILITYDIALOG_H
+#ifndef BITCOIN_QT_UTILITYDIALOG_H
+#define BITCOIN_QT_UTILITYDIALOG_H
 
 #include <QDialog>
 #include <QObject>
 
-class MuskcoinGUI;
+class BitcoinGUI;
 
 namespace interfaces {
     class Node;
@@ -45,11 +45,11 @@ class ShutdownWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit ShutdownWindow(QWidget *parent=0, Qt::WindowFlags f=0);
-    static QWidget *showShutdownWindow(MuskcoinGUI *window);
+    explicit ShutdownWindow(QWidget *parent=nullptr, Qt::WindowFlags f=Qt::Widget);
+    static QWidget *showShutdownWindow(BitcoinGUI *window);
 
 protected:
     void closeEvent(QCloseEvent *event);
 };
 
-#endif // MUSKCOIN_QT_UTILITYDIALOG_H
+#endif // BITCOIN_QT_UTILITYDIALOG_H

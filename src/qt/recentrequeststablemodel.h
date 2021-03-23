@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2018 The Muskcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_RECENTREQUESTSTABLEMODEL_H
-#define MUSKCOIN_QT_RECENTREQUESTSTABLEMODEL_H
+#ifndef BITCOIN_QT_RECENTREQUESTSTABLEMODEL_H
+#define BITCOIN_QT_RECENTREQUESTSTABLEMODEL_H
 
 #include <qt/walletmodel.h>
 
@@ -50,7 +50,7 @@ private:
     Qt::SortOrder order;
 };
 
-/** Model for list of recently generated payment requests / muskcoin: URIs.
+/** Model for list of recently generated payment requests / bitcoin: URIs.
  * Part of wallet model.
  */
 class RecentRequestsTableModel: public QAbstractTableModel
@@ -94,7 +94,7 @@ private:
     WalletModel *walletModel;
     QStringList columns;
     QList<RecentRequestEntry> list;
-    int64_t nReceiveRequestsMaxId;
+    int64_t nReceiveRequestsMaxId{0};
 
     /** Updates the column title to "Amount (DisplayUnit)" and emits headerDataChanged() signal for table headers to react. */
     void updateAmountColumnTitle();
@@ -102,4 +102,4 @@ private:
     QString getAmountTitle();
 };
 
-#endif // MUSKCOIN_QT_RECENTREQUESTSTABLEMODEL_H
+#endif // BITCOIN_QT_RECENTREQUESTSTABLEMODEL_H

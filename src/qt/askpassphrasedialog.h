@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2018 The Muskcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_ASKPASSPHRASEDIALOG_H
-#define MUSKCOIN_QT_ASKPASSPHRASEDIALOG_H
+#ifndef BITCOIN_QT_ASKPASSPHRASEDIALOG_H
+#define BITCOIN_QT_ASKPASSPHRASEDIALOG_H
 
 #include <QDialog>
 
@@ -50,4 +50,4 @@ protected:
     bool eventFilter(QObject *object, QEvent *event);
 };
 
-#endif // MUSKCOIN_QT_ASKPASSPHRASEDIALOG_H
+#endif // BITCOIN_QT_ASKPASSPHRASEDIALOG_H

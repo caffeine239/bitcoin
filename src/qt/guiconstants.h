@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2018 The Muskcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_GUICONSTANTS_H
-#define MUSKCOIN_QT_GUICONSTANTS_H
+#ifndef BITCOIN_QT_GUICONSTANTS_H
+#define BITCOIN_QT_GUICONSTANTS_H
 
 /* Milliseconds between model updates */
 static const int MODEL_UPDATE_DELAY = 250;
@@ -11,7 +11,7 @@ static const int MODEL_UPDATE_DELAY = 250;
 /* AskPassphraseDialog -- Maximum passphrase length */
 static const int MAX_PASSPHRASE_SIZE = 1024;
 
-/* MuskcoinGUI -- Size of icons in status bar */
+/* BitcoinGUI -- Size of icons in status bar */
 static const int STATUSBAR_ICONSIZE = 16;
 
 static const bool DEFAULT_SPLASHSCREEN = true;
@@ -52,4 +52,7 @@ static const int MAX_URI_LENGTH = 255;
 #define QAPP_APP_NAME_TESTNET "Muskcoin-Qt-testnet"
 #define QAPP_APP_NAME_REGTEST "Muskcoin-Qt-regtest"
 
-#endif // MUSKCOIN_QT_GUICONSTANTS_H
+/* One gigabyte (GB) in bytes */
+static constexpr uint64_t GB_BYTES{1000000000};
+
+#endif // BITCOIN_QT_GUICONSTANTS_H

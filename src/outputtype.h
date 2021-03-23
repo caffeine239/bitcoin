@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2018 The Muskcoin Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_OUTPUTTYPE_H
-#define MUSKCOIN_OUTPUTTYPE_H
+#ifndef BITCOIN_OUTPUTTYPE_H
+#define BITCOIN_OUTPUTTYPE_H
 
+#include <attributes.h>
 #include <keystore.h>
 #include <script/standard.h>
 
@@ -26,7 +27,7 @@ enum class OutputType {
     CHANGE_AUTO,
 };
 
-bool ParseOutputType(const std::string& str, OutputType& output_type);
+NODISCARD bool ParseOutputType(const std::string& str, OutputType& output_type);
 const std::string& FormatOutputType(OutputType type);
 
 /**
@@ -45,5 +46,5 @@ std::vector<CTxDestination> GetAllDestinationsForKey(const CPubKey& key);
  */
 CTxDestination AddAndGetDestinationForScript(CKeyStore& keystore, const CScript& script, OutputType);
 
-#endif // MUSKCOIN_OUTPUTTYPE_H
+#endif // BITCOIN_OUTPUTTYPE_H
 

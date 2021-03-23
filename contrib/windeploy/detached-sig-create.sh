@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2014-2015 The Muskcoin Core developers
+# Copyright (c) 2014-2015 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,7 +19,7 @@ SRCDIR=unsigned
 WORKDIR=./.tmp
 OUTDIR="${WORKDIR}/out"
 OUTSUBDIR="${OUTDIR}/win"
-TIMESERVER=http://timestamp.comodoca.com
+TIMESERVER=http://timestamp.digicert.com
 CERTFILE="win-codesign.cert"
 
 mkdir -p "${OUTSUBDIR}"

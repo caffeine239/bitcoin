@@ -1,12 +1,12 @@
-// Copyright (c) 2009-2018 The Muskcoin Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_NETADDRESS_H
-#define MUSKCOIN_NETADDRESS_H
+#ifndef BITCOIN_NETADDRESS_H
+#define BITCOIN_NETADDRESS_H
 
 #if defined(HAVE_CONFIG_H)
-#include <config/muskcoin-config.h>
+#include <config/bitcoin-config.h>
 #endif
 
 #include <compat.h>
@@ -55,6 +55,7 @@ class CNetAddr
         bool SetInternal(const std::string& name);
 
         bool SetSpecial(const std::string &strName); // for Tor addresses
+        bool IsBindAny() const; // INADDR_ANY equivalent
         bool IsIPv4() const;    // IPv4 mapped address (::FFFF:0:0/96, 0.0.0.0/0)
         bool IsIPv6() const;    // IPv6 address (not mapped IPv4, not Tor)
         bool IsRFC1918() const; // IPv4 private networks (10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12)
@@ -172,4 +173,4 @@ class CService : public CNetAddr
         }
 };
 
-#endif // MUSKCOIN_NETADDRESS_H
+#endif // BITCOIN_NETADDRESS_H

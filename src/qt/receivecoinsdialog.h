@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2018 The Muskcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_RECEIVECOINSDIALOG_H
-#define MUSKCOIN_QT_RECEIVECOINSDIALOG_H
+#ifndef BITCOIN_QT_RECEIVECOINSDIALOG_H
+#define BITCOIN_QT_RECEIVECOINSDIALOG_H
 
 #include <qt/guiutil.h>
 
@@ -26,7 +26,7 @@ QT_BEGIN_NAMESPACE
 class QModelIndex;
 QT_END_NAMESPACE
 
-/** Dialog for requesting payment of muskcoins */
+/** Dialog for requesting payment of bitcoins */
 class ReceiveCoinsDialog : public QDialog
 {
     Q_OBJECT
@@ -39,7 +39,7 @@ public:
         MINIMUM_COLUMN_WIDTH = 130
     };
 
-    explicit ReceiveCoinsDialog(const PlatformStyle *platformStyle, QWidget *parent = 0);
+    explicit ReceiveCoinsDialog(const PlatformStyle *platformStyle, QWidget *parent = nullptr);
     ~ReceiveCoinsDialog();
 
     void setModel(WalletModel *model);
@@ -77,4 +77,4 @@ private Q_SLOTS:
     void copyAmount();
 };
 
-#endif // MUSKCOIN_QT_RECEIVECOINSDIALOG_H
+#endif // BITCOIN_QT_RECEIVECOINSDIALOG_H

@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2018 The Muskcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_TRANSACTIONDESC_H
-#define MUSKCOIN_QT_TRANSACTIONDESC_H
+#ifndef BITCOIN_QT_TRANSACTIONDESC_H
+#define BITCOIN_QT_TRANSACTIONDESC_H
 
 #include <QObject>
 #include <QString>
@@ -29,7 +29,7 @@ public:
 private:
     TransactionDesc() {}
 
-    static QString FormatTxStatus(const interfaces::WalletTx& wtx, const interfaces::WalletTxStatus& status, bool inMempool, int numBlocks, int64_t adjustedTime);
+    static QString FormatTxStatus(const interfaces::WalletTx& wtx, const interfaces::WalletTxStatus& status, bool inMempool, int numBlocks);
 };
 
-#endif // MUSKCOIN_QT_TRANSACTIONDESC_H
+#endif // BITCOIN_QT_TRANSACTIONDESC_H

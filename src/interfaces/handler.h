@@ -1,9 +1,9 @@
-// Copyright (c) 2018 The Muskcoin Core developers
+// Copyright (c) 2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_INTERFACES_HANDLER_H
-#define MUSKCOIN_INTERFACES_HANDLER_H
+#ifndef BITCOIN_INTERFACES_HANDLER_H
+#define BITCOIN_INTERFACES_HANDLER_H
 
 #include <memory>
 
@@ -32,4 +32,4 @@ std::unique_ptr<Handler> MakeHandler(boost::signals2::connection connection);
 
 } // namespace interfaces
 
-#endif // MUSKCOIN_INTERFACES_HANDLER_H
+#endif // BITCOIN_INTERFACES_HANDLER_H

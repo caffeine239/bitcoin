@@ -1,9 +1,9 @@
 Muskcoin Core integration/staging tree
 =====================================
 
-[![Build Status](https://travis-ci.org/muskcoin/muskcoin.svg?branch=master)](https://travis-ci.org/muskcoin/muskcoin)
+[![Build Status](https://travis-ci.org/muskcoin-project/muskcoin.svg?branch=master)](https://travis-ci.org/muskcoin-project/muskcoin)
 
-https://muskcoincore.org
+https://muskcoin.org
 
 What is Muskcoin?
 ----------------
@@ -15,8 +15,7 @@ out collectively by the network. Muskcoin Core is the name of open source
 software which enables the use of this currency.
 
 For more information, as well as an immediately useable, binary version of
-the Muskcoin Core software, see https://muskcoincore.org/en/download/, or read the
-[original whitepaper](https://muskcoincore.org/muskcoin.pdf).
+the Muskcoin Core software, see [https://muskcoin.org](https://muskcoin.org).
 
 License
 -------
@@ -28,10 +27,17 @@ Development Process
 -------------------
 
 The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/muskcoin/muskcoin/tags) are created
+completely stable. [Tags](https://github.com/muskcoin-project/muskcoin/tags) are created
 regularly to indicate new official, stable release versions of Muskcoin Core.
 
-The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
+The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md)
+and useful hints for developers can be found in [doc/developer-notes.md](doc/developer-notes.md).
+
+The developer [mailing list](https://groups.google.com/forum/#!forum/muskcoin-dev)
+should be used to discuss complicated or controversial changes before working
+on a patch set.
+
+Developer IRC can be found on Freenode at #muskcoin-dev.
 
 Testing
 -------
@@ -64,13 +70,11 @@ not straightforward.
 Translations
 ------------
 
-Changes to translations as well as new translations can be submitted to
-[Muskcoin Core's Transifex page](https://www.transifex.com/projects/p/muskcoin/).
+We only accept translation fixes that are submitted through [Bitcoin Core's Transifex page](https://www.transifex.com/projects/p/bitcoin/).
+Translations are converted to Muskcoin periodically.
 
 Translations are periodically pulled from Transifex and merged into the git repository. See the
 [translation process](doc/translation_process.md) for details on how this works.
 
 **Important**: We do not accept translation changes as GitHub pull requests because the next
 pull from Transifex would automatically overwrite them again.
-
-Translators should also subscribe to the [mailing list](https://groups.google.com/forum/#!forum/muskcoin-translators).

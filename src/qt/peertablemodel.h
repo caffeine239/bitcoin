@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2018 The Muskcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_PEERTABLEMODEL_H
-#define MUSKCOIN_QT_PEERTABLEMODEL_H
+#ifndef BITCOIN_QT_PEERTABLEMODEL_H
+#define BITCOIN_QT_PEERTABLEMODEL_H
 
 #include <net_processing.h> // For CNodeStateStats
 #include <net.h>
@@ -51,7 +51,7 @@ class PeerTableModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
-    explicit PeerTableModel(interfaces::Node& node, ClientModel *parent = 0);
+    explicit PeerTableModel(interfaces::Node& node, ClientModel *parent = nullptr);
     ~PeerTableModel();
     const CNodeCombinedStats *getNodeStats(int idx);
     int getRowByNodeId(NodeId nodeid);
@@ -89,4 +89,4 @@ private:
     QTimer *timer;
 };
 
-#endif // MUSKCOIN_QT_PEERTABLEMODEL_H
+#endif // BITCOIN_QT_PEERTABLEMODEL_H

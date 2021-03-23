@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2018 The Muskcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_MACDOCKICONHANDLER_H
-#define MUSKCOIN_QT_MACDOCKICONHANDLER_H
+#ifndef BITCOIN_QT_MACDOCKICONHANDLER_H
+#define BITCOIN_QT_MACDOCKICONHANDLER_H
 
 #include <QObject>
 
@@ -24,4 +24,4 @@ private:
     MacDockIconHandler();
 };
 
-#endif // MUSKCOIN_QT_MACDOCKICONHANDLER_H
+#endif // BITCOIN_QT_MACDOCKICONHANDLER_H

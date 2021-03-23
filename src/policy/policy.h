@@ -1,10 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2018 The Muskcoin Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_POLICY_POLICY_H
-#define MUSKCOIN_POLICY_POLICY_H
+#ifndef BITCOIN_POLICY_POLICY_H
+#define BITCOIN_POLICY_POLICY_H
 
 #include <consensus/consensus.h>
 #include <policy/feerate.h>
@@ -45,7 +45,7 @@ static const unsigned int MAX_STANDARD_P2WSH_SCRIPT_SIZE = 3600;
  * standard and should be done with care and ideally rarely. It makes sense to
  * only increase the dust limit after prior releases were already not creating
  * outputs below the new threshold */
-static const unsigned int DUST_RELAY_TX_FEE = 3000;
+static const unsigned int DUST_RELAY_TX_FEE = 30000;
 /**
  * Standard script verification flags that standard transactions will comply
  * with. However scripts violating these flags may still be present in valid
@@ -107,4 +107,4 @@ int64_t GetVirtualTransactionSize(int64_t nWeight, int64_t nSigOpCost);
 int64_t GetVirtualTransactionSize(const CTransaction& tx, int64_t nSigOpCost = 0);
 int64_t GetVirtualTransactionInputSize(const CTxIn& tx, int64_t nSigOpCost = 0);
 
-#endif // MUSKCOIN_POLICY_POLICY_H
+#endif // BITCOIN_POLICY_POLICY_H

@@ -1,8 +1,8 @@
 <!-- This issue tracker is only for technical issues related to Muskcoin Core.
 
-General muskcoin questions and/or support requests are best directed to the Muskcoin StackExchange at https://muskcoin.stackexchange.com.
+General muskcoin questions and/or support requests and are best directed to the [muskcointalk.io forums](https://muskcointalk.io/).
 
-For reporting security issues, please read instructions at https://muskcoincore.org/en/contact/.
+For reporting security issues, please contact the Muskcoin developers on the #muskcoin-dev Freenode IRC channel or alternatively you can email us at contact@muskcoin.org.
 
 If the node is "stuck" during sync or giving "block checksum mismatch" errors, please ensure your hardware is stable by running memtest and observe CPU temperature with a load-test tool such as linpack before creating an issue! -->
 
@@ -16,6 +16,8 @@ If the node is "stuck" during sync or giving "block checksum mismatch" errors, p
 <!-- What version of Muskcoin Core are you using, where did you get it (website, self-compiled, etc)? -->
 
 <!-- What type of machine are you observing the error on (OS/CPU and disk type)? -->
+
+<!-- For the GUI-related issue on Linux provide names and versions of a distro, a desktop environment and a graphical shell (if relevant). -->
 
 <!-- Any extra information that might be useful in the debugging process. -->
 <!--- This is normally the contents of a `debug.log` or `config.log` file. Raw text or a link to a pastebin type site are preferred. -->

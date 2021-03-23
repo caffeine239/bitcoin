@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2018 The Muskcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_SENDCOINSDIALOG_H
-#define MUSKCOIN_QT_SENDCOINSDIALOG_H
+#ifndef BITCOIN_QT_SENDCOINSDIALOG_H
+#define BITCOIN_QT_SENDCOINSDIALOG_H
 
 #include <qt/walletmodel.h>
 
@@ -25,13 +25,13 @@ QT_BEGIN_NAMESPACE
 class QUrl;
 QT_END_NAMESPACE
 
-/** Dialog for sending muskcoins */
+/** Dialog for sending bitcoins */
 class SendCoinsDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit SendCoinsDialog(const PlatformStyle *platformStyle, QWidget *parent = 0);
+    explicit SendCoinsDialog(const PlatformStyle *platformStyle, QWidget *parent = nullptr);
     ~SendCoinsDialog();
 
     void setClientModel(ClientModel *clientModel);
@@ -92,9 +92,7 @@ private Q_SLOTS:
     void coinControlClipboardBytes();
     void coinControlClipboardLowOutput();
     void coinControlClipboardChange();
-    void setMinimumFee();
     void updateFeeSectionControls();
-    void updateMinFeeLabel();
     void updateSmartFeeLabel();
 
 Q_SIGNALS:
@@ -110,7 +108,7 @@ class SendConfirmationDialog : public QMessageBox
     Q_OBJECT
 
 public:
-    SendConfirmationDialog(const QString &title, const QString &text, int secDelay = SEND_CONFIRM_DELAY, QWidget *parent = 0);
+    SendConfirmationDialog(const QString &title, const QString &text, int secDelay = SEND_CONFIRM_DELAY, QWidget *parent = nullptr);
     int exec();
 
 private Q_SLOTS:
@@ -123,4 +121,4 @@ private:
     int secDelay;
 };
 
-#endif // MUSKCOIN_QT_SENDCOINSDIALOG_H
+#endif // BITCOIN_QT_SENDCOINSDIALOG_H

@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2018 The Muskcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_COINCONTROLDIALOG_H
-#define MUSKCOIN_QT_COINCONTROLDIALOG_H
+#ifndef BITCOIN_QT_COINCONTROLDIALOG_H
+#define BITCOIN_QT_COINCONTROLDIALOG_H
 
 #include <amount.h>
 
@@ -43,7 +43,7 @@ class CoinControlDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit CoinControlDialog(const PlatformStyle *platformStyle, QWidget *parent = 0);
+    explicit CoinControlDialog(const PlatformStyle *platformStyle, QWidget *parent = nullptr);
     ~CoinControlDialog();
 
     void setModel(WalletModel *model);
@@ -80,9 +80,14 @@ private:
         COLUMN_ADDRESS,
         COLUMN_DATE,
         COLUMN_CONFIRMATIONS,
-        COLUMN_TXHASH,
-        COLUMN_VOUT_INDEX,
     };
+
+    enum
+    {
+        TxHashRole = Qt::UserRole,
+        VOutRole
+    };
+
     friend class CCoinControlWidgetItem;
 
 private Q_SLOTS:
@@ -109,4 +114,4 @@ private Q_SLOTS:
     void updateLabelLocked();
 };
 
-#endif // MUSKCOIN_QT_COINCONTROLDIALOG_H
+#endif // BITCOIN_QT_COINCONTROLDIALOG_H

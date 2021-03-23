@@ -1,9 +1,9 @@
-// Copyright (c) 2016-2018 The Muskcoin Core developers
+// Copyright (c) 2016-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_MODALOVERLAY_H
-#define MUSKCOIN_QT_MODALOVERLAY_H
+#ifndef BITCOIN_QT_MODALOVERLAY_H
+#define BITCOIN_QT_MODALOVERLAY_H
 
 #include <QDateTime>
 #include <QWidget>
@@ -45,6 +45,7 @@ private:
     QVector<QPair<qint64, double> > blockProcessTime;
     bool layerIsVisible;
     bool userClosed;
+    void UpdateHeaderSyncLabel();
 };
 
-#endif // MUSKCOIN_QT_MODALOVERLAY_H
+#endif // BITCOIN_QT_MODALOVERLAY_H

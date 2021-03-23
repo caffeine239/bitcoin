@@ -14,24 +14,18 @@ purposes. As such there are repository "maintainers" who are responsible for
 merging pull requests as well as a "lead maintainer" who is responsible for the
 release cycle, overall merging, moderation and appointment of maintainers.
 
-If you're looking for somewhere to start contributing, check out the
-[good first issue](https://github.com/muskcoin/muskcoin/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
-list.
-
 Communication Channels
 ----------------------
 
 Most communication about Muskcoin Core development happens on IRC, in the
-#muskcoin-core-dev channel on Freenode. The easiest way to participate on IRC is
-with the web client, [webchat.freenode.net](https://webchat.freenode.net/). Chat
-history logs can be found
-on [botbot.me](https://botbot.me/freenode/muskcoin-core-dev/).
+#muskcoin-dev channel on Freenode. The easiest way to participate on IRC is
+with the web client, [webchat.freenode.net](https://webchat.freenode.net/).
 
 Discussion about code base improvements happens in GitHub issues and on pull
 requests.
 
 The developer
-[mailing list](https://lists.linuxfoundation.org/mailman/listinfo/muskcoin-dev)
+[mailing list](https://groups.google.com/forum/#!forum/muskcoin-dev)
 should be used to discuss complicated or controversial changes before working on
 a patch set.
 
@@ -66,6 +60,8 @@ your decisions. Further explanation [here](http://chris.beams.io/posts/git-commi
 If a particular commit references another issue, please add the reference. For
 example: `refs #1234` or `fixes #4321`. Using the `fixes` or `closes` keywords
 will cause the corresponding issue to be closed when the pull request is merged.
+
+Commit messages should never contain any `@` mentions.
 
 Please refer to the [Git manual](https://git-scm.com/doc) for more information
 about Git.
@@ -103,7 +99,7 @@ Examples:
     Trivial: Fix typo in init.cpp
 
 Note that translations should not be submitted as pull requests, please see
-[Translation Process](https://github.com/muskcoin/muskcoin/blob/master/doc/translation_process.md) 
+[Translation Process](https://github.com/bitcoin/bitcoin/blob/master/doc/translation_process.md) 
 for more information on helping with translations.
 
 If a pull request is not to be considered for merging (yet), please
@@ -134,6 +130,10 @@ before it will be merged. The basic squashing workflow is shown below.
     # On the next screen, edit/refine commit messages.
     # Save and quit.
     git push -f # (force push to GitHub)
+
+Please update the resulting commit message if needed, it should read as a
+coherent message. In most cases this means that you should not just list the
+interim commits.
 
 If you have problems with squashing (or other workflows with `git`), you can
 alternatively enable "Allow edits from maintainers" in the right GitHub

@@ -3,9 +3,9 @@ Muskcoin Core
 
 Setup
 ---------------------
-Muskcoin Core is the original Muskcoin client and it builds the backbone of the network. It downloads and, by default, stores the entire history of Muskcoin transactions (which is currently more than 100 GBs); depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
+Muskcoin Core is the original Muskcoin client and it builds the backbone of the network. It downloads and, by default, stores the entire history of Muskcoin transactions, which requires approximately 22 gigabytes of disk space. Depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
 
-To download Muskcoin Core, visit [muskcoincore.org](https://muskcoincore.org/en/releases/).
+To download Muskcoin Core, visit [muskcoin.org](https://muskcoin.org/).
 
 Running
 ---------------------
@@ -28,10 +28,10 @@ Drag Muskcoin Core to your applications folder, and then run Muskcoin Core.
 
 ### Need Help?
 
-* See the documentation at the [Muskcoin Wiki](https://en.muskcoin.it/wiki/Main_Page)
+* See the documentation at the [Muskcoin Wiki](https://muskcoin.info/)
 for help and more information.
 * Ask for help on [#muskcoin](http://webchat.freenode.net?channels=muskcoin) on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net?channels=muskcoin).
-* Ask for help on the [MuskcoinTalk](https://muskcointalk.org/) forums, in the [Technical Support board](https://muskcointalk.org/index.php?board=4.0).
+* Ask for help on the [MuskcoinTalk](https://muskcointalk.io/) forums, in the [Technical Support section](https://muskcointalk.io/c/technical-support).
 
 Building
 ---------------------
@@ -41,21 +41,22 @@ The following are developer notes on how to build Muskcoin Core on your native p
 - [macOS Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
 - [Windows Build Notes](build-windows.md)
+- [FreeBSD Build Notes](build-freebsd.md)
 - [OpenBSD Build Notes](build-openbsd.md)
 - [NetBSD Build Notes](build-netbsd.md)
-- [Gitian Building Guide](gitian-building.md)
+- [Gitian Building Guide (External Link)](https://github.com/bitcoin-core/docs/blob/master/gitian-building.md)
 
 Development
 ---------------------
 The Muskcoin repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
+- [Productivity Notes](productivity.md)
 - [Release Notes](release-notes.md)
 - [Release Process](release-process.md)
-- [Source Code Documentation (External Link)](https://dev.visucore.com/muskcoin/doxygen/)
 - [Translation Process](translation_process.md)
 - [Translation Strings Policy](translation_strings_policy.md)
-- [Travis CI](travis-ci.md)
+- [JSON-RPC Interface](JSON-RPC-interface.md)
 - [Unauthenticated REST Interface](REST-interface.md)
 - [Shared Libraries](shared-libraries.md)
 - [BIPS](bips.md)
@@ -63,12 +64,12 @@ The Muskcoin repo's [root README](/README.md) contains relevant information on t
 - [Benchmarking](benchmarking.md)
 
 ### Resources
-* Discuss on the [MuskcoinTalk](https://muskcointalk.org/) forums, in the [Development & Technical Discussion board](https://muskcointalk.org/index.php?board=6.0).
-* Discuss project-specific development on #muskcoin-core-dev on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net/?channels=muskcoin-core-dev).
-* Discuss general Muskcoin development on #muskcoin-dev on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net/?channels=muskcoin-dev).
+* Discuss on the [MuskcoinTalk](https://muskcointalk.io/) forums.
+* Discuss general Muskcoin development on #muskcoin-dev on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net/?channels=muskcoin-dev.
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)
+- [bitcoin.conf Configuration File](bitcoin-conf.md)
 - [Files](files.md)
 - [Fuzz-testing](fuzzing.md)
 - [Reduce Traffic](reduce-traffic.md)

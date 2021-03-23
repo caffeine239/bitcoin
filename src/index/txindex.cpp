@@ -1,11 +1,11 @@
-// Copyright (c) 2017-2018 The Muskcoin Core developers
+// Copyright (c) 2017-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <index/txindex.h>
 #include <shutdown.h>
 #include <ui_interface.h>
-#include <util.h>
+#include <util/system.h>
 #include <validation.h>
 
 #include <boost/thread.hpp>
@@ -245,12 +245,15 @@ bool TxIndex::Init()
 
 bool TxIndex::WriteBlock(const CBlock& block, const CBlockIndex* pindex)
 {
+    // Exclude genesis block transaction because outputs are not spendable.
+    if (pindex->nHeight == 0) return true;
+
     CDiskTxPos pos(pindex->GetBlockPos(), GetSizeOfCompactSize(block.vtx.size()));
     std::vector<std::pair<uint256, CDiskTxPos>> vPos;
     vPos.reserve(block.vtx.size());
     for (const auto& tx : block.vtx) {
         vPos.emplace_back(tx->GetHash(), pos);
-        pos.nTxOffset += ::GetSerializeSize(*tx, SER_DISK, CLIENT_VERSION);
+        pos.nTxOffset += ::GetSerializeSize(*tx, CLIENT_VERSION);
     }
     return m_db->WriteTxs(vPos);
 }

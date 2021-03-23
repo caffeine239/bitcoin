@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2018 The Muskcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_TRANSACTIONFILTERPROXY_H
-#define MUSKCOIN_QT_TRANSACTIONFILTERPROXY_H
+#ifndef BITCOIN_QT_TRANSACTIONFILTERPROXY_H
+#define BITCOIN_QT_TRANSACTIONFILTERPROXY_H
 
 #include <amount.h>
 
@@ -16,7 +16,7 @@ class TransactionFilterProxy : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-    explicit TransactionFilterProxy(QObject *parent = 0);
+    explicit TransactionFilterProxy(QObject *parent = nullptr);
 
     /** Earliest date that can be represented (far in the past) */
     static const QDateTime MIN_DATE;
@@ -65,4 +65,4 @@ private:
     bool showInactive;
 };
 
-#endif // MUSKCOIN_QT_TRANSACTIONFILTERPROXY_H
+#endif // BITCOIN_QT_TRANSACTIONFILTERPROXY_H

@@ -1,20 +1,26 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2018 The Muskcoin Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_INIT_H
-#define MUSKCOIN_INIT_H
+#ifndef BITCOIN_INIT_H
+#define BITCOIN_INIT_H
 
 #include <memory>
 #include <string>
-#include <util.h>
+#include <util/system.h>
 
-class CScheduler;
-class CWallet;
+namespace interfaces {
+class Chain;
+class ChainClient;
+} // namespace interfaces
 
-class WalletInitInterface;
-extern const WalletInitInterface& g_wallet_init_interface;
+//! Pointers to interfaces used during init and destroyed on shutdown.
+struct InitInterfaces
+{
+    std::unique_ptr<interfaces::Chain> chain;
+    std::vector<std::unique_ptr<interfaces::ChainClient>> chain_clients;
+};
 
 namespace boost
 {
@@ -23,13 +29,13 @@ class thread_group;
 
 /** Interrupt threads */
 void Interrupt();
-void Shutdown();
+void Shutdown(InitInterfaces& interfaces);
 //!Initialize the logging infrastructure
 void InitLogging();
 //!Parameter interaction: change current parameters depending on various rules
 void InitParameterInteraction();
 
-/** Initialize muskcoin core: Basic context setup.
+/** Initialize bitcoin core: Basic context setup.
  *  @note This can be done before daemonization. Do not call Shutdown() if this function fails.
  *  @pre Parameters should be parsed and config file should be read.
  */
@@ -47,17 +53,17 @@ bool AppInitParameterInteraction();
  */
 bool AppInitSanityChecks();
 /**
- * Lock muskcoin core data directory.
+ * Lock bitcoin core data directory.
  * @note This should only be done after daemonization. Do not call Shutdown() if this function fails.
  * @pre Parameters should be parsed and config file should be read, AppInitSanityChecks should have been called.
  */
 bool AppInitLockDataDirectory();
 /**
- * Muskcoin core main initialization.
+ * Bitcoin core main initialization.
  * @note This should only be done after daemonization. Call Shutdown() if this function fails.
  * @pre Parameters should be parsed and config file should be read, AppInitLockDataDirectory should have been called.
  */
-bool AppInitMain();
+bool AppInitMain(InitInterfaces& interfaces);
 
 /**
  * Setup the arguments for gArgs
@@ -67,4 +73,4 @@ void SetupServerArgs();
 /** Returns licensing information (for -version) */
 std::string LicenseInfo();
 
-#endif // MUSKCOIN_INIT_H
+#endif // BITCOIN_INIT_H

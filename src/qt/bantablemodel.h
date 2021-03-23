@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2018 The Muskcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_BANTABLEMODEL_H
-#define MUSKCOIN_QT_BANTABLEMODEL_H
+#ifndef BITCOIN_QT_BANTABLEMODEL_H
+#define BITCOIN_QT_BANTABLEMODEL_H
 
 #include <net.h>
 
@@ -45,7 +45,7 @@ class BanTableModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
-    explicit BanTableModel(interfaces::Node& node, ClientModel *parent = 0);
+    explicit BanTableModel(interfaces::Node& node, ClientModel *parent = nullptr);
     ~BanTableModel();
     void startAutoRefresh();
     void stopAutoRefresh();
@@ -77,4 +77,4 @@ private:
     std::unique_ptr<BanTablePriv> priv;
 };
 
-#endif // MUSKCOIN_QT_BANTABLEMODEL_H
+#endif // BITCOIN_QT_BANTABLEMODEL_H

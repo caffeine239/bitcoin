@@ -3,14 +3,15 @@ Release Process
 
 Before every release candidate:
 
-* Update translations (ping wumpus on IRC) see [translation_process.md](https://github.com/muskcoin/muskcoin/blob/master/doc/translation_process.md#synchronising-translations).
+* Update translations (ping wumpus on IRC) see [translation_process.md](https://github.com/bitcoin/bitcoin/blob/master/doc/translation_process.md#synchronising-translations).
 
-* Update manpages, see [gen-manpages.sh](https://github.com/muskcoin/muskcoin/blob/master/contrib/devtools/README.md#gen-manpagessh).
+* Update manpages, see [gen-manpages.sh](https://github.com/muskcoin-project/muskcoin/blob/master/contrib/devtools/README.md#gen-manpagessh).
+* Update release candidate version in `configure.ac` (`CLIENT_VERSION_RC`)
 
 Before every minor and major release:
 
 * Update [bips.md](bips.md) to account for changes since the last release.
-* Update version in `configure.ac` (don't forget to set `CLIENT_VERSION_IS_RELEASE` to `true`)
+* Update version in `configure.ac` (don't forget to set `CLIENT_VERSION_IS_RELEASE` to `true`) (don't forget to set `CLIENT_VERSION_RC` to `0`)
 * Write release notes (see below)
 * Update `src/chainparams.cpp` nMinimumChainWork with information from the getblockchaininfo rpc.
 * Update `src/chainparams.cpp` defaultAssumeValid with information from the getblockhash rpc.
@@ -21,10 +22,10 @@ Before every minor and major release:
 
 Before every major release:
 
-* Update hardcoded [seeds](/contrib/seeds/README.md), see [this pull request](https://github.com/muskcoin/muskcoin/pull/7415) for an example.
-* Update [`BLOCK_CHAIN_SIZE`](/src/qt/intro.cpp) to the current size plus some overhead.
+* Update hardcoded [seeds](/contrib/seeds/README.md), see [this pull request](https://github.com/bitcoin/bitcoin/pull/7415) for an example.
+* Update [`src/chainparams.cpp`](/src/chainparams.cpp) m_assumed_blockchain_size and m_assumed_chain_state_size with the current size plus some overhead.
 * Update `src/chainparams.cpp` chainTxData with statistics about the transaction count and rate. Use the output of the RPC `getchaintxstats`, see
-  [this pull request](https://github.com/muskcoin/muskcoin/pull/12270) for an example. Reviewers can verify the results by running `getchaintxstats <window_block_count> <window_last_block_hash>` with the `window_block_count` and `window_last_block_hash` from your output.
+  [this pull request](https://github.com/bitcoin/bitcoin/pull/12270) for an example. Reviewers can verify the results by running `getchaintxstats <window_block_count> <window_last_block_hash>` with the `window_block_count` and `window_last_block_hash` from your output.
 * Update version of `contrib/gitian-descriptors/*.yml`: usually one'd want to do this on master after branching off the release - but be sure to at least do it before a new major release
 
 ### First time / New builders
@@ -34,10 +35,10 @@ If you're using the automated script (found in [contrib/gitian-build.py](/contri
 Check out the source code in the following directory hierarchy.
 
     cd /path/to/your/toplevel/build
-    git clone https://github.com/muskcoin-core/gitian.sigs.git
-    git clone https://github.com/muskcoin-core/muskcoin-detached-sigs.git
+    git clone https://github.com/muskcoin-project/gitian.sigs.tsla.git
+    git clone https://github.com/muskcoin-project/muskcoin-detached-sigs.git
     git clone https://github.com/devrandom/gitian-builder.git
-    git clone https://github.com/muskcoin/muskcoin.git
+    git clone https://github.com/muskcoin-project/muskcoin.git
 
 ### Muskcoin maintainers/release engineers, suggestion for writing release notes
 
@@ -69,9 +70,9 @@ Setup Gitian descriptors:
     git checkout v${VERSION}
     popd
 
-Ensure your gitian.sigs are up-to-date if you wish to gverify your builds against other Gitian signatures.
+Ensure your gitian.sigs.tsla are up-to-date if you wish to gverify your builds against other Gitian signatures.
 
-    pushd ./gitian.sigs
+    pushd ./gitian.sigs.tsla
     git pull
     popd
 
@@ -85,11 +86,13 @@ Ensure gitian-builder is up-to-date:
 
     pushd ./gitian-builder
     mkdir -p inputs
-    wget -P inputs https://muskcoincore.org/cfields/osslsigncode-Backports-to-1.7.1.patch
-    wget -P inputs http://downloads.sourceforge.net/project/osslsigncode/osslsigncode/osslsigncode-1.7.1.tar.gz
+    wget -P inputs https://bitcoincore.org/cfields/osslsigncode-Backports-to-1.7.1.patch
+    echo 'a8c4e9cafba922f89de0df1f2152e7be286aba73f78505169bc351a7938dd911 inputs/osslsigncode-Backports-to-1.7.1.patch' | sha256sum -c
+    wget -P inputs https://downloads.sourceforge.net/project/osslsigncode/osslsigncode/osslsigncode-1.7.1.tar.gz
+    echo 'f9a8cdb38b9c309326764ebc937cba1523a3a751a7ab05df3ecc99d18ae466c9 inputs/osslsigncode-1.7.1.tar.gz' | sha256sum -c
     popd
 
-Create the macOS SDK tarball, see the [macOS readme](README_osx.md) for details, and copy it into the inputs directory.
+Create the macOS SDK tarball, see the [macOS build instructions](build-osx.md#deterministic-macos-dmg-notes) for details, and copy it into the inputs directory.
 
 ### Optional: Seed the Gitian sources cache and offline git repositories
 
@@ -113,18 +116,21 @@ The gbuild invocations below <b>DO NOT DO THIS</b> by default.
 
 ### Build and sign Muskcoin Core for Linux, Windows, and macOS:
 
+    export GITIAN_THREADS=2
+    export GITIAN_MEMORY=3000
+    
     pushd ./gitian-builder
-    ./bin/gbuild --num-make 2 --memory 3000 --commit muskcoin=v${VERSION} ../muskcoin/contrib/gitian-descriptors/gitian-linux.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-linux --destination ../gitian.sigs/ ../muskcoin/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gbuild --num-make $GITIAN_THREADS --memory $GITIAN_MEMORY --commit muskcoin=v${VERSION} ../muskcoin/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-linux --destination ../gitian.sigs.tsla/ ../muskcoin/contrib/gitian-descriptors/gitian-linux.yml
     mv build/out/muskcoin-*.tar.gz build/out/src/muskcoin-*.tar.gz ../
 
-    ./bin/gbuild --num-make 2 --memory 3000 --commit muskcoin=v${VERSION} ../muskcoin/contrib/gitian-descriptors/gitian-win.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../muskcoin/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gbuild --num-make $GITIAN_THREADS --memory $GITIAN_MEMORY --commit muskcoin=v${VERSION} ../muskcoin/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-win-unsigned --destination ../gitian.sigs.tsla/ ../muskcoin/contrib/gitian-descriptors/gitian-win.yml
     mv build/out/muskcoin-*-win-unsigned.tar.gz inputs/muskcoin-win-unsigned.tar.gz
     mv build/out/muskcoin-*.zip build/out/muskcoin-*.exe ../
 
-    ./bin/gbuild --num-make 2 --memory 3000 --commit muskcoin=v${VERSION} ../muskcoin/contrib/gitian-descriptors/gitian-osx.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../muskcoin/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gbuild --num-make $GITIAN_THREADS --memory $GITIAN_MEMORY --commit muskcoin=v${VERSION} ../muskcoin/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-osx-unsigned --destination ../gitian.sigs.tsla/ ../muskcoin/contrib/gitian-descriptors/gitian-osx.yml
     mv build/out/muskcoin-*-osx-unsigned.tar.gz inputs/muskcoin-osx-unsigned.tar.gz
     mv build/out/muskcoin-*.tar.gz build/out/muskcoin-*.dmg ../
     popd
@@ -135,7 +141,7 @@ Build output expected:
   2. linux 32-bit and 64-bit dist tarballs (`muskcoin-${VERSION}-linux[32|64].tar.gz`)
   3. windows 32-bit and 64-bit unsigned installers and dist zips (`muskcoin-${VERSION}-win[32|64]-setup-unsigned.exe`, `muskcoin-${VERSION}-win[32|64].zip`)
   4. macOS unsigned installer and dist tarball (`muskcoin-${VERSION}-osx-unsigned.dmg`, `muskcoin-${VERSION}-osx64.tar.gz`)
-  5. Gitian signatures (in `gitian.sigs/${VERSION}-<linux|{win,osx}-unsigned>/(your Gitian key)/`)
+  5. Gitian signatures (in `gitian.sigs.tsla/${VERSION}-<linux|{win,osx}-unsigned>/(your Gitian key)/`)
 
 ### Verify other gitian builders signatures to your own. (Optional)
 
@@ -144,16 +150,16 @@ Add other gitian builders keys to your gpg keyring, and/or refresh keys: See `..
 Verify the signatures
 
     pushd ./gitian-builder
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../muskcoin/contrib/gitian-descriptors/gitian-linux.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../muskcoin/contrib/gitian-descriptors/gitian-win.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../muskcoin/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gverify -v -d ../gitian.sigs.tsla/ -r ${VERSION}-linux ../muskcoin/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gverify -v -d ../gitian.sigs.tsla/ -r ${VERSION}-win-unsigned ../muskcoin/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gverify -v -d ../gitian.sigs.tsla/ -r ${VERSION}-osx-unsigned ../muskcoin/contrib/gitian-descriptors/gitian-osx.yml
     popd
 
 ### Next steps:
 
-Commit your signature to gitian.sigs:
+Commit your signature to gitian.sigs.tsla:
 
-    pushd gitian.sigs
+    pushd gitian.sigs.tsla
     git add ${VERSION}-linux/"${SIGNER}"
     git add ${VERSION}-win-unsigned/"${SIGNER}"
     git add ${VERSION}-osx-unsigned/"${SIGNER}"
@@ -195,14 +201,14 @@ Codesigner only: Commit the detached codesign payloads:
 Non-codesigners: wait for Windows/macOS detached signatures:
 
 - Once the Windows/macOS builds each have 3 matching signatures, they will be signed with their respective release keys.
-- Detached signatures will then be committed to the [muskcoin-detached-sigs](https://github.com/muskcoin-core/muskcoin-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
+- Detached signatures will then be committed to the [muskcoin-detached-sigs](https://github.com/muskcoin-project/muskcoin-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
 
 Create (and optionally verify) the signed macOS binary:
 
     pushd ./gitian-builder
     ./bin/gbuild -i --commit signature=v${VERSION} ../muskcoin/contrib/gitian-descriptors/gitian-osx-signer.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../muskcoin/contrib/gitian-descriptors/gitian-osx-signer.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../muskcoin/contrib/gitian-descriptors/gitian-osx-signer.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-osx-signed --destination ../gitian.sigs.tsla/ ../muskcoin/contrib/gitian-descriptors/gitian-osx-signer.yml
+    ./bin/gverify -v -d ../gitian.sigs.tsla/ -r ${VERSION}-osx-signed ../muskcoin/contrib/gitian-descriptors/gitian-osx-signer.yml
     mv build/out/muskcoin-osx-signed.dmg ../muskcoin-${VERSION}-osx.dmg
     popd
 
@@ -210,19 +216,19 @@ Create (and optionally verify) the signed Windows binaries:
 
     pushd ./gitian-builder
     ./bin/gbuild -i --commit signature=v${VERSION} ../muskcoin/contrib/gitian-descriptors/gitian-win-signer.yml
-    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../muskcoin/contrib/gitian-descriptors/gitian-win-signer.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-signed ../muskcoin/contrib/gitian-descriptors/gitian-win-signer.yml
+    ./bin/gsign --signer "$SIGNER" --release ${VERSION}-win-signed --destination ../gitian.sigs.tsla/ ../muskcoin/contrib/gitian-descriptors/gitian-win-signer.yml
+    ./bin/gverify -v -d ../gitian.sigs.tsla/ -r ${VERSION}-win-signed ../muskcoin/contrib/gitian-descriptors/gitian-win-signer.yml
     mv build/out/muskcoin-*win64-setup.exe ../muskcoin-${VERSION}-win64-setup.exe
     mv build/out/muskcoin-*win32-setup.exe ../muskcoin-${VERSION}-win32-setup.exe
     popd
 
 Commit your signature for the signed macOS/Windows binaries:
 
-    pushd gitian.sigs
+    pushd gitian.sigs.tsla
     git add ${VERSION}-osx-signed/"${SIGNER}"
     git add ${VERSION}-win-signed/"${SIGNER}"
     git commit -a
-    git push  # Assuming you can push to the gitian.sigs tree
+    git push  # Assuming you can push to the gitian.sigs.tsla tree
     popd
 
 ### After 3 or more people have gitian-built and their results match:
@@ -261,49 +267,25 @@ rm SHA256SUMS
 (the digest algorithm is forced to sha256 to avoid confusion of the `Hash:` header that GPG adds with the SHA256 used for the files)
 Note: check that SHA256SUMS itself doesn't end up in SHA256SUMS, which is a spurious/nonsensical entry.
 
-- Upload zips and installers, as well as `SHA256SUMS.asc` from last step, to the muskcoin.org server
-  into `/var/www/bin/muskcoin-core-${VERSION}`
+- Upload zips and installers, as well as `SHA256SUMS.asc` from last step, to the muskcoin.org server.
 
-- A `.torrent` will appear in the directory after a few minutes. Optionally help seed this torrent. To get the `magnet:` URI use:
-```bash
-transmission-show -m <torrent file>
 ```
-Insert the magnet URI into the announcement sent to mailing lists. This permits
-people without access to `muskcoin.org` to download the binary distribution.
-Also put it into the `optional_magnetlink:` slot in the YAML file for
-muskcoin.org (see below for muskcoin.org update instructions).
-
 - Update muskcoin.org version
 
-  - First, check to see if the Muskcoin.org maintainers have prepared a
-    release: https://github.com/muskcoin-dot-org/muskcoin.org/labels/Core
-
-      - If they have, it will have previously failed their Travis CI
-        checks because the final release files weren't uploaded.
-        Trigger a Travis CI rebuild---if it passes, merge.
-
-  - If they have not prepared a release, follow the Muskcoin.org release
-    instructions: https://github.com/muskcoin-dot-org/muskcoin.org/blob/master/docs/adding-events-release-notes-and-alerts.md#release-notes
-
-  - After the pull request is merged, the website will automatically show the newest version within 15 minutes, as well
-    as update the OS download links. Ping @saivann/@harding (saivann/harding on Freenode) in case anything goes wrong
+- Update other repositories and websites for new version
 
 - Announce the release:
 
-  - muskcoin-dev and muskcoin-core-dev mailing list
+  - muskcoin-dev mailing list
 
-  - Muskcoin Core announcements list https://muskcoincore.org/en/list/announcements/join/
+  - blog.muskcoin.org blog post
 
-  - muskcoincore.org blog post
-
-  - Update title of #muskcoin on Freenode IRC
+  - Update title of #muskcoin and #muskcoin-dev on Freenode IRC
 
   - Optionally twitter, reddit /r/Muskcoin, ... but this will usually sort out itself
 
-  - Notify BlueMatt so that he can start building [the PPAs](https://launchpad.net/~muskcoin/+archive/ubuntu/muskcoin)
-
   - Archive release notes for the new version to `doc/release-notes/` (branch `master` and branch of the release)
 
-  - Create a [new GitHub release](https://github.com/muskcoin/muskcoin/releases/new) with a link to the archived release notes.
+  - Create a [new GitHub release](https://github.com/muskcoin-project/muskcoin/releases/new) with a link to the archived release notes.
 
   - Celebrate

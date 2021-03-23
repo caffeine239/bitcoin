@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2018 The Muskcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_CLIENTMODEL_H
-#define MUSKCOIN_QT_CLIENTMODEL_H
+#ifndef BITCOIN_QT_CLIENTMODEL_H
+#define BITCOIN_QT_CLIENTMODEL_H
 
 #include <QObject>
 #include <QDateTime>
@@ -40,13 +40,13 @@ enum NumConnections {
     CONNECTIONS_ALL  = (CONNECTIONS_IN | CONNECTIONS_OUT),
 };
 
-/** Model for Muskcoin network client. */
+/** Model for Bitcoin network client. */
 class ClientModel : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit ClientModel(interfaces::Node& node, OptionsModel *optionsModel, QObject *parent = 0);
+    explicit ClientModel(interfaces::Node& node, OptionsModel *optionsModel, QObject *parent = nullptr);
     ~ClientModel();
 
     interfaces::Node& node() const { return m_node; }
@@ -69,6 +69,7 @@ public:
     bool isReleaseVersion() const;
     QString formatClientStartupTime() const;
     QString dataDir() const;
+    QString blocksDir() const;
 
     bool getProxyInfo(std::string& ip_port) const;
 
@@ -116,4 +117,4 @@ public Q_SLOTS:
     void updateBanlist();
 };
 
-#endif // MUSKCOIN_QT_CLIENTMODEL_H
+#endif // BITCOIN_QT_CLIENTMODEL_H

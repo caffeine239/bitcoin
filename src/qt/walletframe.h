@@ -1,14 +1,14 @@
-// Copyright (c) 2011-2017 The Muskcoin Core developers
+// Copyright (c) 2011-2019 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_WALLETFRAME_H
-#define MUSKCOIN_QT_WALLETFRAME_H
+#ifndef BITCOIN_QT_WALLETFRAME_H
+#define BITCOIN_QT_WALLETFRAME_H
 
 #include <QFrame>
 #include <QMap>
 
-class MuskcoinGUI;
+class BitcoinGUI;
 class ClientModel;
 class PlatformStyle;
 class SendCoinsRecipient;
@@ -21,9 +21,9 @@ QT_END_NAMESPACE
 
 /**
  * A container for embedding all wallet-related
- * controls into MuskcoinGUI. The purpose of this class is to allow future
+ * controls into BitcoinGUI. The purpose of this class is to allow future
  * refinements of the wallet controls with minimal need for further
- * modifications to MuskcoinGUI, thus greatly simplifying merges while
+ * modifications to BitcoinGUI, thus greatly simplifying merges while
  * reducing the risk of breaking top-level stuff.
  */
 class WalletFrame : public QFrame
@@ -31,14 +31,14 @@ class WalletFrame : public QFrame
     Q_OBJECT
 
 public:
-    explicit WalletFrame(const PlatformStyle *platformStyle, MuskcoinGUI *_gui = 0);
+    explicit WalletFrame(const PlatformStyle *platformStyle, BitcoinGUI *_gui = nullptr);
     ~WalletFrame();
 
     void setClientModel(ClientModel *clientModel);
 
     bool addWallet(WalletModel *walletModel);
-    bool setCurrentWallet(const QString& name);
-    bool removeWallet(const QString &name);
+    bool setCurrentWallet(WalletModel* wallet_model);
+    bool removeWallet(WalletModel* wallet_model);
     void removeAllWallets();
 
     bool handlePaymentRequest(const SendCoinsRecipient& recipient);
@@ -51,16 +51,17 @@ Q_SIGNALS:
 
 private:
     QStackedWidget *walletStack;
-    MuskcoinGUI *gui;
+    BitcoinGUI *gui;
     ClientModel *clientModel;
-    QMap<QString, WalletView*> mapWalletViews;
+    QMap<WalletModel*, WalletView*> mapWalletViews;
 
     bool bOutOfSync;
 
     const PlatformStyle *platformStyle;
 
 public:
-    WalletView *currentWalletView();
+    WalletView* currentWalletView() const;
+    WalletModel* currentWalletModel() const;
 
 public Q_SLOTS:
     /** Switch to overview (home) page */
@@ -94,4 +95,4 @@ public Q_SLOTS:
     void outOfSyncWarningClicked();
 };
 
-#endif // MUSKCOIN_QT_WALLETFRAME_H
+#endif // BITCOIN_QT_WALLETFRAME_H

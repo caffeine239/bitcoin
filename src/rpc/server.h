@@ -1,10 +1,10 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2018 The Muskcoin Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_RPC_SERVER_H
-#define MUSKCOIN_RPC_SERVER_H
+#ifndef BITCOIN_RPC_SERVER_H
+#define BITCOIN_RPC_SERVER_H
 
 #include <amount.h>
 #include <rpc/protocol.h>
@@ -110,7 +110,7 @@ public:
      * This is needed to cope with the case in which there is no HTTP server, but
      * only GUI RPC console, and to break the dependency of pcserver on httprpc.
      */
-    virtual RPCTimerBase* NewTimer(std::function<void(void)>& func, int64_t millis) = 0;
+    virtual RPCTimerBase* NewTimer(std::function<void()>& func, int64_t millis) = 0;
 };
 
 /** Set the factory function for timers */
@@ -124,7 +124,7 @@ void RPCUnsetTimerInterface(RPCTimerInterface *iface);
  * Run func nSeconds from now.
  * Overrides previous timer <name> (if any).
  */
-void RPCRunLater(const std::string& name, std::function<void(void)> func, int64_t nSeconds);
+void RPCRunLater(const std::string& name, std::function<void()> func, int64_t nSeconds);
 
 typedef UniValue(*rpcfn_type)(const JSONRPCRequest& jsonRequest);
 
@@ -138,7 +138,7 @@ public:
 };
 
 /**
- * Muskcoin RPC command dispatcher.
+ * Bitcoin RPC command dispatcher.
  */
 class CRPCTable
 {
@@ -206,4 +206,4 @@ std::string JSONRPCExecBatch(const JSONRPCRequest& jreq, const UniValue& vReq);
 // Retrieves any serialization flags requested in command line argument
 int RPCSerializationFlags();
 
-#endif // MUSKCOIN_RPC_SERVER_H
+#endif // BITCOIN_RPC_SERVER_H

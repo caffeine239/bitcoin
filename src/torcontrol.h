@@ -1,12 +1,12 @@
-// Copyright (c) 2015-2018 The Muskcoin Core developers
+// Copyright (c) 2015-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 /**
  * Functionality for communicating with Tor.
  */
-#ifndef MUSKCOIN_TORCONTROL_H
-#define MUSKCOIN_TORCONTROL_H
+#ifndef BITCOIN_TORCONTROL_H
+#define BITCOIN_TORCONTROL_H
 
 #include <scheduler.h>
 
@@ -17,4 +17,4 @@ void StartTorControl();
 void InterruptTorControl();
 void StopTorControl();
 
-#endif /* MUSKCOIN_TORCONTROL_H */
+#endif /* BITCOIN_TORCONTROL_H */

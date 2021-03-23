@@ -2,16 +2,12 @@
 #
 # linearize-hashes.py:  List blocks in a linear, no-fork version of the chain.
 #
-# Copyright (c) 2013-2018 The Muskcoin Core developers
+# Copyright (c) 2013-2018 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #
 
-from __future__ import print_function
-try: # Python 3
-    import http.client as httplib
-except ImportError: # Python 2
-    import httplib
+from http.client import HTTPConnection
 import json
 import re
 import base64
@@ -26,12 +22,12 @@ def hex_switchEndian(s):
     pairList = [s[i:i+2].encode() for i in range(0, len(s), 2)]
     return b''.join(pairList[::-1]).decode()
 
-class MuskcoinRPC:
+class BitcoinRPC:
     def __init__(self, host, port, username, password):
         authpair = "%s:%s" % (username, password)
         authpair = authpair.encode('utf-8')
         self.authhdr = b"Basic " + base64.b64encode(authpair)
-        self.conn = httplib.HTTPConnection(host, port=port, timeout=30)
+        self.conn = HTTPConnection(host, port=port, timeout=30)
 
     def execute(self, obj):
         try:
@@ -68,7 +64,7 @@ class MuskcoinRPC:
         return 'error' in resp_obj and resp_obj['error'] is not None
 
 def get_block_hashes(settings, max_blocks_per_call=10000):
-    rpc = MuskcoinRPC(settings['host'], settings['port'],
+    rpc = BitcoinRPC(settings['host'], settings['port'],
              settings['rpcuser'], settings['rpcpassword'])
 
     height = settings['min_height']
@@ -124,7 +120,7 @@ if __name__ == '__main__':
     if 'host' not in settings:
         settings['host'] = '127.0.0.1'
     if 'port' not in settings:
-        settings['port'] = 8332
+        settings['port'] = 3331
     if 'min_height' not in settings:
         settings['min_height'] = 0
     if 'max_height' not in settings:

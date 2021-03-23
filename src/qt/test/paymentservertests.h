@@ -1,9 +1,9 @@
-// Copyright (c) 2009-2018 The Muskcoin Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MUSKCOIN_QT_TEST_PAYMENTSERVERTESTS_H
-#define MUSKCOIN_QT_TEST_PAYMENTSERVERTESTS_H
+#ifndef BITCOIN_QT_TEST_PAYMENTSERVERTESTS_H
+#define BITCOIN_QT_TEST_PAYMENTSERVERTESTS_H
 
 #include <qt/paymentserver.h>
 
@@ -32,4 +32,4 @@ public:
     SendCoinsRecipient recipient;
 };
 
-#endif // MUSKCOIN_QT_TEST_PAYMENTSERVERTESTS_H
+#endif // BITCOIN_QT_TEST_PAYMENTSERVERTESTS_H

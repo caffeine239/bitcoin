@@ -24,10 +24,10 @@ Build Tools and Keys
 ### Packaging ###
 The [Debian](/contrib/debian) subfolder contains the copyright file.
 
-All other packaging related files can be found in the [muskcoin-core/packaging](https://github.com/muskcoin-core/packaging) repository.
+All other packaging related files can be found in the [bitcoin-core/packaging](https://github.com/bitcoin-core/packaging) repository.
 
 ### [Gitian-descriptors](/contrib/gitian-descriptors) ###
-Files used during the gitian build process. For more information about gitian, see the [the Muskcoin Core documentation repository](https://github.com/muskcoin-core/docs).
+Files used during the gitian build process. For more information about gitian, see the [the Bitcoin Core documentation repository](https://github.com/bitcoin-core/docs).
 
 ### [Gitian-keys](/contrib/gitian-keys)
 PGP keys used for signing Muskcoin Core [Gitian release](/doc/release-process.md) results.
