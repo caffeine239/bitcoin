@@ -96,7 +96,7 @@ Configuration option changes
   disabled, so a warning is now printed if a user selects such a
   configuration.  If you need to expose RPC in order to use a tool like
   Docker, ensure you only bind RPC to your localhost, e.g. `docker run
-  [...] -p 127.0.0.1:2331:2331` (this is an extra `:2331` over the
+  [...] -p 127.0.0.1:3331:3331` (this is an extra `:3331` over the
   normal Docker port specification).
 
 - The `rpcpassword` option now causes a startup error if the password

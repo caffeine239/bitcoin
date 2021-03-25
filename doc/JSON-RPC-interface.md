@@ -69,7 +69,7 @@ RPC interface will be abused.
     need to expose the RPC port to the host system.  The default way to
     do this in Docker also exposes the port to the public Internet.
     Instead, expose it only on the host system's localhost, for example:
-    `-p 127.0.0.1:2331:2331`
+    `-p 127.0.0.1:3331:3331`
 
 - **Secure authentication:** By default, Muskcoin Core generates unique
   login credentials each time it restarts and puts them into a file

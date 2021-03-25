@@ -35,5 +35,3 @@ Network specific options can be:
 The configuration file is not automatically created; you can create it using your favorite text editor. By default, the configuration file name is `muskcoin.conf` and it is located in the Muskcoin data directory, but both the Muskcoin data directory and the configuration file path may be changed using the `-datadir` and `-conf` command-line options.
 
 The `includeconf=<file>` option in the `muskcoin.conf` file can be used to include additional configuration files.
-find . -type f -print0 | xargs -0 sed -i 's/2332/2332/g'
-find . -type f -print0 | xargs -0 sed -i 's/3331/2331/g'
