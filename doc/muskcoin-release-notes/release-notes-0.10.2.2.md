@@ -51,10 +51,10 @@ is included in as separate release-notes.  This section describes the Muskcoin-s
 
 Protocol:
 - Scrypt Proof-of-Work instead of sha256d, however block hashes are sha256d for performance reasons.
-- Muskcoin TCP port 3332 (instead of 8333)
-- RPC TCP port 3331 (instead of 8332)
-- Testnet TCP port 13333 (instead of 18333)
-- Testnet RPC TCP port 13331 (instead of 18332)
+- Muskcoin TCP port 4333 (instead of 8333)
+- RPC TCP port 4332 (instead of 8332)
+- Testnet TCP port 14333 (instead of 18333)
+- Testnet RPC TCP port 14332 (instead of 18332)
 - 84 million coin limit  (instead of 21 million)
 - Magic 0xfbc0b6db       (instead of 0xf9beb4d9)
 - Target Block Time 2.5 minutes (instead of 10 minutes)

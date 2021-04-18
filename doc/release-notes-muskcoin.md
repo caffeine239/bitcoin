@@ -96,7 +96,7 @@ Configuration option changes
   disabled, so a warning is now printed if a user selects such a
   configuration.  If you need to expose RPC in order to use a tool like
   Docker, ensure you only bind RPC to your localhost, e.g. `docker run
-  [...] -p 127.0.0.1:3331:3331` (this is an extra `:3331` over the
+  [...] -p 127.0.0.1:4332:4332` (this is an extra `:4332` over the
   normal Docker port specification).
 
 - The `rpcpassword` option now causes a startup error if the password
@@ -637,7 +637,7 @@ Changes for particular platforms
 - #12676 Show `bip125-replaceable` flag, when retrieving mempool entries (dexX7)
 - #13723 PSBT key path cleanups (sipa)
 - #14008 Preserve a format of RPC command definitions (kostyantyn)
-- #2331 Let wallet `importmulti` RPC accept labels for standard scriptPubKeys (ryanofsky)
+- #4332 Let wallet `importmulti` RPC accept labels for standard scriptPubKeys (ryanofsky)
 - #13983 Return more specific reject reason for submitblock (MarcoFalke)
 - #13152 Add getnodeaddresses RPC command (chris-belcher)
 - #14298 rest: Improve performance for JSON calls (alecalve)

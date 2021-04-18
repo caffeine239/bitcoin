@@ -226,8 +226,8 @@ static UniValue addnode(const JSONRPCRequest& request)
                 },
                 RPCResults{},
                 RPCExamples{
-                    HelpExampleCli("addnode", "\"192.168.0.6:3332\" \"onetry\"")
-            + HelpExampleRpc("addnode", "\"192.168.0.6:3332\", \"onetry\"")
+                    HelpExampleCli("addnode", "\"192.168.0.6:4333\" \"onetry\"")
+            + HelpExampleRpc("addnode", "\"192.168.0.6:4333\", \"onetry\"")
                 },
             }.ToString());
 
@@ -320,7 +320,7 @@ static UniValue getaddednodeinfo(const JSONRPCRequest& request)
             "    \"connected\" : true|false,          (boolean) If connected\n"
             "    \"addresses\" : [                    (list of objects) Only when connected = true\n"
             "       {\n"
-            "         \"address\" : \"192.168.0.201:3332\",  (string) The muskcoin server IP and port we're connected to\n"
+            "         \"address\" : \"192.168.0.201:4333\",  (string) The muskcoin server IP and port we're connected to\n"
             "         \"connected\" : \"outbound\"           (string) connection, inbound or outbound\n"
             "       }\n"
             "     ]\n"

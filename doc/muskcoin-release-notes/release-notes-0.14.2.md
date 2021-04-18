@@ -50,7 +50,7 @@ Reset Testnet
 -------------
 
 Testnet3 has been deprecated and replaced with Testnet4. The server port has been changed to 19335 however the RPC port remains
-the same (12331).
+the same (14332).
 
 Testnet faucets can be located at:
 - http://testnet.muskcointools.com

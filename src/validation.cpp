@@ -1158,7 +1158,7 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
     if (halvings >= 64)
         return 0;
 
-    CAmount nSubsidy = 20 * COIN;
+    CAmount nSubsidy = 50 * COIN;
     // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
     nSubsidy >>= halvings;
     return nSubsidy;
@@ -1728,7 +1728,7 @@ static unsigned int GetBlockScriptFlags(const CBlockIndex* pindex, const Consens
     AssertLockHeld(cs_main);
 
     unsigned int flags = SCRIPT_VERIFY_NONE;
-
+    
     // Start enforcing P2SH (BIP16)
     if (pindex->nHeight >= consensusparams.BIP16Height) {
         flags |= SCRIPT_VERIFY_P2SH;
@@ -1862,7 +1862,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     // Now that the whole chain is irreversibly beyond that time it is applied to all blocks except the
     // two in the chain that violate it. This prevents exploiting the issue against nodes during their
     // initial block download.
-
+    
     bool fEnforceBIP30 = true;
     //bool fEnforceBIP30 = !((pindex->nHeight==91842 && pindex->GetBlockHash() == uint256S("0x00000000000a4d0a398161ffc163c503763b1f4360639393e0e4c8e300e0caec")) ||
     //                       (pindex->nHeight==91880 && pindex->GetBlockHash() == uint256S("0x00000000000743f190a18c5577a3c2d2a1f610ae9601ac046a38084ccb7cd721")));
@@ -3227,10 +3227,8 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
 
     // Check proof of work
     const Consensus::Params& consensusParams = params.GetConsensus();
-    unsigned int NextWorkBits = GetNextWorkRequired(pindexPrev, &block, consensusParams);
-
-    if (block.nBits != NextWorkBits)
-       return state.DoS(100, false, REJECT_INVALID, strprintf("Bits(%d), bad-diffbits(%d)", block.nBits, NextWorkBits), false, "incorrect proof of work");
+    if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams))
+        return state.DoS(100, false, REJECT_INVALID, "bad-diffbits", false, "incorrect proof of work");
 
     // Check against checkpoints
     if (fCheckpointsEnabled) {
@@ -3252,23 +3250,15 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
 
     // Reject outdated version blocks when 95% (75% on testnet) of the network has upgraded:
     // check for version 2, 3 and 4 upgrades
-    if(block.nVersion < 2 && nHeight >= consensusParams.BIP34Height)
-    {
-        return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x), BIP34Height(%d), nHeight(%d)", block.nVersion, consensusParams.BIP34Height, nHeight), strprintf("rejected nVersion=0x%08x block", block.nVersion));
-    }
-    else if(block.nVersion < 3 && nHeight >= consensusParams.BIP66Height)
-    {
-        return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x), BIP66Height(%d), nHeight(%d)", block.nVersion, consensusParams.BIP34Height, nHeight), strprintf("rejected nVersion=0x%08x block", block.nVersion));
-    }
-    else if(block.nVersion < 4 && nHeight >= consensusParams.BIP65Height)
-    {
-        return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x), BIP65Height(%d), nHeight(%d)", block.nVersion, consensusParams.BIP34Height, nHeight), strprintf("rejected nVersion=0x%08x block", block.nVersion));
-    }
+    if((block.nVersion < 2 && nHeight >= consensusParams.BIP34Height) ||
+       (block.nVersion < 3 && nHeight >= consensusParams.BIP66Height) ||
+       (block.nVersion < 4 && nHeight >= consensusParams.BIP65Height))
+            return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x)", block.nVersion),
+                                 strprintf("rejected nVersion=0x%08x block", block.nVersion));
 
-    bool _IsWitnessEnabled = IsWitnessEnabled(pindexPrev, consensusParams);
-
-    if(block.nVersion < VERSIONBITS_TOP_BITS && _IsWitnessEnabled)
-        return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x), IsWitnessEnabled(%d), nHeight(%d)", block.nVersion, _IsWitnessEnabled, nHeight), strprintf("rejected nVersion=0x%08x block", block.nVersion));
+    if (block.nVersion < VERSIONBITS_TOP_BITS && IsWitnessEnabled(pindexPrev, consensusParams))
+        return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x)", block.nVersion),
+                                 strprintf("rejected nVersion=0x%08x block", block.nVersion));
 
     return true;
 }
